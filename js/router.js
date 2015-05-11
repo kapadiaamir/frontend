@@ -17,7 +17,7 @@ router.on('route:landlords', function(){
 }); 
 
 router.on('route:students', function(){
-    console.log("loading students");
+    studentList.render();;
 });
 
 Backbone.history.start({pushState: true}); 

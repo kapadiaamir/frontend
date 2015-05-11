@@ -69,9 +69,14 @@ h6 {
     margin: 0 auto;
 }
 
-.img-resize { 
-    height: 30%;
-    width: 23%;
+.img-resize-6 { 
+    height: 250px;
+    width: 175px;
+}
+
+.img-resize-4 { 
+    height: 25%;
+    width: 20%;
 }
 
 #services {
@@ -80,11 +85,17 @@ h6 {
 
 #the-team {
     background: url(../img/rutgers.jpeg) no-repeat center center;
-    background-size: cover;
+    background-size: 45%;
+    background-position: center center;
+    background-repeat: no-repeat;
 }
 
 .title {
     font-size: 2.5em;
+}
+
+.size-1-5 {
+    font-size: 1.5em;
 }
 
 .services-heading { 
