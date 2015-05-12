@@ -65,49 +65,7 @@ h6 {
     text-shadow: 2px 2px 3px rgba(0,0,0,0.6);
 }
 
-.img-center {
-    margin: 0 auto;
-}
 
-.img-resize-6 { 
-    height: 250px;
-    width: 175px;
-}
-
-.img-resize-4 { 
-    height: 25%;
-    width: 20%;
-}
-
-#services {
-    background-color: #fafafa;
-}
-
-#the-team {
-    background: url(../img/rutgers.jpeg) no-repeat center center;
-    background-size: 45%;
-    background-position: center center;
-    background-repeat: no-repeat;
-}
-
-.title {
-    font-size: 2.5em;
-}
-
-.size-1-5 {
-    font-size: 1.5em;
-}
-
-.services-heading { 
-    font-size: 2.0em;
-    color: #f00;
-}
-
-.message {
-    padding-bottom: 20px;
-    color: #000;
-    font-size: 1.3em;
-}
 
 @media(max-width:767px) {
     .intro-message {

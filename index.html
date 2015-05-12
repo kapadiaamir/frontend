@@ -15,7 +15,8 @@
         <!--twitter bootstrap stylesheets -->
         <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/css/bootstrap-theme.min.css">
-        <link rel="stylesheet" type="text/css" href="/css/landing-page.css">    
+        <link rel="stylesheet" type="text/css" href="/css/landing-page.css">  
+        <link rel="stylesheet" type="text/css" href="/css/global.css">  
 
 
         <!--backbone setup -->
@@ -231,18 +232,67 @@
             </div>
         </script>
 
+        <!--sign up page -->
+        <script type="text/template" id="sign-up-form">
+            <h1>Sign Up</h1>
+            <form id="signup" class="sign-up-form">
+                <label class="input-label">User Account Type</label> 
+                <select name="type" class="input input-select"> 
+                    <option class="input-option" value="student">Student</option>
+                    <option class="input-option" value="landlord">Landlord</option>
+                </select> <br/>
+                <input class="input input-text" type="text" name="firstname" placeholder="First Name">
+                <input class="input input-text" type="text" name="lastname" placeholder="Last Name">
+                <input class="input input-text" type="text" name="username" placeholder="Username">
+                <input class="input input-text" type="email" name="email" placeholder="Email">
+                <input class="input input-text" type="password" name="password" placeholder="Password">
+                <label class="input-label">Years at College:</label> <select name="yearsAtCollege" class="input input-select">
+                    <option value="0">0-1 years</option>
+                    <option value="1">1-2 years</option>
+                    <option value="2">2-3 years</option>
+                    <option value="3">3-4 years</option>
+                    <option value="4">4-5 years</option>
+                </select> <br/>
+                <label class="input-label">Years Off Campus:</label> <select name="yearsOffCampus" class="input input-select">
+                    <option value="0">0-1 years</option>
+                    <option value="1">1-2 years</option>
+                    <option value="2">2-3 years</option>
+                    <option value="3">3-4 years</option>
+                    <option value="4">4-5 years</option>
+                </select> <br/>
+                <label class="input-label">Are you currently off-campus?</label> <select name="currentlyOffCampus" class="input input-select">
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select><br/>
+                <button type="submit" class="btn btn-primary">Sign Up</button>
+            </form>
+        </script>
 
+        <!--log in page-->
+        <script type="text/template" id="log-in-form">
+
+        </script>
+
+        <!-- landlord profile page -->
+        <script type="text/template" id="landlord-profile">
+
+
+        </script>
 
         <!--javascript files-->
         <script src="/js/config.js"></script>
 
         <!--models-->
         <script src="/js/models/landlords.js"></script>
+        <script src="/js/models/landlord.js"></script>
         <script src="/js/models/students.js"></script>
+        <script src="/js/models/student.js"></script>
+
 
         <!--views-->
-        <script src="/js/views/landlordView.js"></script>
-        <script src="/js/views/studentView.js"></script>
+        <script src="/js/views/landlordsView.js"></script>
+        <script src="/js/views/studentsView.js"></script>
+        <script src="/js/views/signUpView.js"></script>
 
         <!--router-->
         <script src="/js/router.js"></script>

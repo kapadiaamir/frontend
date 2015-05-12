@@ -2,7 +2,10 @@ var Router = Backbone.Router.extend({
     routes: {
         '' : 'home',
         'landlords' : 'landlords',
-        'students': 'students'
+        'students': 'students',
+        'landlords/:username': 'landlord',
+        'students/:username': 'student',
+        'signup': 'signup'
     }
 });
 
@@ -16,8 +19,20 @@ router.on('route:landlords', function(){
     landlordList.render();
 }); 
 
+router.on('route:landlord', function(username){
+    console.log(username);
+});
+
 router.on('route:students', function(){
-    studentList.render();;
+    studentList.render();
+});
+
+router.on('route:student', function(username){
+    console.log(username);
+});
+
+router.on('route:signup', function(){
+    signUpView.render();
 });
 
 Backbone.history.start({pushState: true}); 
