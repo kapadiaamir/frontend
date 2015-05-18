@@ -24,4 +24,9 @@ router.on('route:signup', function(){
     signUpView.render();
 });
 
+router.on('route:login', function(){
+	console.log("router: login page ");
+    loginView.render();
+});
+
 Backbone.history.start({pushState: true}); 
