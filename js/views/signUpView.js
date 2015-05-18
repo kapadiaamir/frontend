@@ -17,9 +17,17 @@ var SignUpView = Backbone.View.extend({
         user.lastname = document.getElementById("lastname").value; 
         user.email = document.getElementById("email").value; 
         user.password = document.getElementById("password").value;
-        user.yearsAtCollege = document.getElementById("yearsAtCollege").value; 
-        user.yearsOffCampus = document.getElementById("yearsOffCampus").value; 
-        user.currentlyOffCampus = document.getElementById("currentlyOffCampus").value; 
+
+        if(user.type == "student"){
+            user.yearsAtCollege = document.getElementById("yearsAtCollege").value; 
+            user.yearsOffCampus = document.getElementById("yearsOffCampus").value; 
+            user.currentlyOffCampus = document.getElementById("currentlyOffCampus").value;
+        }
+
+        if(user.type == "landlord"){
+            user.companyname = document.getElementById("companyname").value; 
+            user.yearsInService = document.getElementById("yearsInService").value; 
+        }
 
         //create path
         var path = "http://localhost/api/" + user.type + "s/register";
@@ -60,8 +68,8 @@ var SignUpView = Backbone.View.extend({
             document.getElementById("yearsAtCollege").style.display = "";
             document.getElementById("yearsOffCampus-label").style.display = "";
             document.getElementById("yearsAtCollege-label").style.display = "";
+            document.getElementById("currentlyOffCampus-label").style.display = "";
             document.getElementById("currentlyOffCampus").style.display = "";
-            document.getElementById("yearsAtCollege-label").style.display = "";
             document.getElementById("yearsInService").style.display = "none";
             document.getElementById("companyname").style.display = "none";
         }
@@ -73,7 +81,7 @@ var SignUpView = Backbone.View.extend({
             document.getElementById("currentlyOffCampus-label").style.display = "none";
             document.getElementById("currentlyOffCampus").style.display = "none";
             document.getElementById("yearsInService").style.display = "";
-            document.getElementById("companyname").style.display = ""
+            document.getElementById("companyname").style.display = "";
         }
         else{
             //do nothing 
