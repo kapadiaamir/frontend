@@ -1,17 +1,9 @@
-var StudentList = Backbone.View.extend({
+var StudentView = Backbone.View.extend({
     el: '#content', 
-    render: function(){
-        var that = this; 
-        var students = new Students(); 
-        students.fetch({
-            success: function(students){
-                console.log(students.models[0].get('students'));
-                
-                var template = _.template($('#student-list-template').html())({ students: students.models[0].get('students')});
-                that.$el.html(template);
-            }
-        });
+    render: function(options){
+        console.log(options)
+        this.$el.html("user goes here! " + options.username);
     }
-}); 
+});
 
-var studentList = new StudentList(); 
+var studentView = new StudentView(); 

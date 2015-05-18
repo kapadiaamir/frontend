@@ -16,4 +16,17 @@ $.fn.serializeObject = function() {
           }
       });
       return o;
-    };
+};
+
+var Router = Backbone.Router.extend({
+    routes: {
+        '' : 'home',
+        'landlords' : 'landlords',
+        'students': 'students',
+        'landlords/:username': 'landlord',
+        'students/:username': 'student',
+        'signup': 'signup'
+    }
+});
+
+var router = new Router(); 
