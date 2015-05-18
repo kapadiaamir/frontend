@@ -5,7 +5,8 @@ var SignUpView = Backbone.View.extend({
         this.$el.html(template);
     }, 
     events: {
-        'click #sign-up-button': 'signUp'
+        'click #sign-up-button': 'signUp', 
+        'change #type': 'typeChange'
     }, 
     signUp: function(event){
         //load form variables and validate data
@@ -19,8 +20,6 @@ var SignUpView = Backbone.View.extend({
         user.yearsAtCollege = document.getElementById("yearsAtCollege").value; 
         user.yearsOffCampus = document.getElementById("yearsOffCampus").value; 
         user.currentlyOffCampus = document.getElementById("currentlyOffCampus").value; 
-
-
 
         //create path
         var path = "http://localhost/api/" + user.type + "s/register";
@@ -51,6 +50,35 @@ var SignUpView = Backbone.View.extend({
 
         };
         request.send(JSON.stringify(user));
+    },
+    typeChange: function(event){
+        console.log(event.currentTarget.value);
+        var type = event.currentTarget.value; 
+
+        if(type == "student"){
+            document.getElementById("yearsOffCampus").style.display = "";
+            document.getElementById("yearsAtCollege").style.display = "";
+            document.getElementById("yearsOffCampus-label").style.display = "";
+            document.getElementById("yearsAtCollege-label").style.display = "";
+            document.getElementById("currentlyOffCampus").style.display = "";
+            document.getElementById("yearsAtCollege-label").style.display = "";
+            document.getElementById("yearsInService").style.display = "none";
+            document.getElementById("companyname").style.display = "none";
+        }
+        else if(type == "landlord"){
+            document.getElementById("yearsOffCampus").style.display = "none";
+            document.getElementById("yearsAtCollege").style.display = "none";
+            document.getElementById("yearsOffCampus-label").style.display = "none";
+            document.getElementById("yearsAtCollege-label").style.display = "none";
+            document.getElementById("currentlyOffCampus-label").style.display = "none";
+            document.getElementById("currentlyOffCampus").style.display = "none";
+            document.getElementById("yearsInService").style.display = "";
+            document.getElementById("companyname").style.display = ""
+        }
+        else{
+            //do nothing 
+            return false; 
+        }
     }
 })
 

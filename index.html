@@ -235,26 +235,28 @@
                     <option class="input-option" value="student">Student</option>
                     <option class="input-option" value="landlord">Landlord</option>
                 </select> <br/>
+                <input class="input input-text" style="display: none;" id="companyname" name="companyname" placeholder="Company Name">
                 <input class="input input-text" type="text" id="firstname" name="firstname" placeholder="First Name">
                 <input class="input input-text" type="text" id="lastname" name="lastname" placeholder="Last Name">
                 <input class="input input-text" type="text" id="username" name="username" placeholder="Username">
                 <input class="input input-text" type="email" id="email" name="email" placeholder="Email">
                 <input class="input input-text" type="password" id="password" name="password" placeholder="Password">
-                <label class="input-label">Years at College:</label> <select id ="yearsAtCollege" name="yearsAtCollege" class="input input-select">
+                <input class="input input-text" style="display:none;" type="text" id="yearsInService" name="yearsInService" placeholder="Years in Service">
+                <label id="yearsAtCollege-label" class="input-label">Years at College:</label> <select id ="yearsAtCollege" name="yearsAtCollege" class="input input-select">
                     <option value="0">0-1 years</option>
                     <option value="1">1-2 years</option>
                     <option value="2">2-3 years</option>
                     <option value="3">3-4 years</option>
                     <option value="4">4-5 years</option>
                 </select> <br/>
-                <label class="input-label">Years Off Campus:</label> <select id="yearsOffCampus" name="yearsOffCampus" class="input input-select">
+                <label id="yearsOffCampus-label"class="input-label">Years Off Campus:</label> <select id="yearsOffCampus" name="yearsOffCampus" class="input input-select">
                     <option value="0">0-1 years</option>
                     <option value="1">1-2 years</option>
                     <option value="2">2-3 years</option>
                     <option value="3">3-4 years</option>
                     <option value="4">4-5 years</option>
                 </select> <br/>
-                <label class="input-label">Are you currently off-campus?</label> <select id="currentlyOffCampus" name="currentlyOffCampus" class="input input-select">
+                <label id="currentlyOffCampus-label" class="input-label">Are you currently off-campus?</label> <select id="currentlyOffCampus" name="currentlyOffCampus" class="input input-select">
                     <option value="true">Yes</option>
                     <option value="false">No</option>
                 </select><br/>
