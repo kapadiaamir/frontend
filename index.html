@@ -15,7 +15,8 @@
         <!--twitter bootstrap stylesheets -->
         <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/css/bootstrap-theme.min.css">
-        <link rel="stylesheet" type="text/css" href="/css/landing-page.css">    
+        <link rel="stylesheet" type="text/css" href="/css/landing-page.css">  
+        <link rel="stylesheet" type="text/css" href="/css/global.css">  
 
 
         <!--backbone setup -->
@@ -35,7 +36,7 @@
             <div class="container topnav">
                 <!-- Brand and toggle get grouped for better mobile display -->
                 <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#topics">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
@@ -44,7 +45,7 @@
                     <a class="navbar-brand topnav" href="/">Scarlet Apartments</a>
                 </div>
                 <!-- Collect the nav links, forms, and other content for toggling -->
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <div class="collapse navbar-collapse" id="topics">
                     <ul class="nav navbar-nav navbar-right">
                         <li>
                             <a href="#about">About</a>
@@ -81,7 +82,7 @@
                             <hr class="intro-divider">
                             <div class="btn-group">
                                 <a href="/login" class="btn btn-default btn-lg">Log In</a>
-                                <a href="/signup" class="btn btn-default btn-lg">Register</a>
+                                <a href="/signup" class="btn btn-default btn-lg">Sign Up</a>
                             </div>
                         </div>
                     </div>
@@ -96,22 +97,16 @@
         <!-- services -->
         <a name="services"></a>
         <section id="services">
-            <div class="content-section text-center">
+            <div class="container-fluid text-center">
                 <div class="row">
-                    <div class="col-lg-12">
-                        <h1 class="col-lg-12 title">Services</h1>
-                        <div class="col-lg-12 text-center">
-                            <h3 class="services-heading">Landlord Accoutability</h3>
-                            <p class="message">We provide landlord accountability for all off campus students. Had a landlord that didn't meet your housing requirements? Let your fellow students know and force the landlords to be accountable for the way they treat the students</p>
-                        </div>
-                        <div class="col-lg-12 text-center">
-                            <h3 class="services-heading">Listing Reviews</h3>
-                            <p class="message">We provide listing reviews</p>
-                        </div>
-                        <div class="col-lg-12 text-center">
-                            <h3 class="services-heading">Housing Finder</h3>
-                            <p class="message">We provide listing reviews</p>
-                        </div>
+                    <div class="col-lg-12 title">
+                        <h1>Services</h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <p class="services-heading">Landlord Accountability</p>
+                        <p class="message">stuff</p>
                     </div>
                 </div>
             </div>
@@ -124,19 +119,42 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1>The Team</h1>
-                        <div class="col-lg-6 text-center">
-                            <img class="img-rounded img-responsive img-center img-resize" src="/img/mush_pic.jpg" alt="">
-                            <a href="http://mushaheedkapadia.com"><h3 class="text-primary">Mushaheed Kapadia</h3></a>
-                            <p><span class="italic">"You can run, but you'll only die tired."</span> - Boba Fett.</p>
-                            <h4 class="text-default">CTO</h4>
-                        </div>
                         <div class=" col-lg-6 text-center">
-                            <img class="img-circle img-responsive img-center" src="http://placehold.it/200x200" alt="">
+                            <img class="img-rounded img-responsive img-center img-resize-6" src="/img/manan_pic.jpg" alt="">
                             <a href="#"><h3 class="text-primary">Manan Bavishi</h3></a>
                             <p><span class="italic">"I like fat chicks."</span> - Manan Bavishi.</p>
                             <h4 class="text-default">CEO</h4>
                         </div>
-
+                        <div class="col-lg-6 text-center">
+                            <img class="img-rounded img-responsive img-center img-resize-6" src="/img/mush_pic.jpg" alt="">
+                            <a href="http://mushaheedkapadia.com"><h3 class="text-primary">Mushaheed Kapadia</h3></a>
+                            <p><span class="italic">"I like fat chicks."</span> - Mush Kapadia.</p>
+                            <h4 class="text-default">CTO</h4>
+                        </div>
+                        <div class="col-lg-4 text-center">
+                            <img class="img-rounded img-responsive img-center img-resize-6" src="/img/neil_patel.jpg" alt="">
+                            <a href="#"><h3 class="text-primary">Neil Patel</h3></a>
+                            <p><span class="italic">"I like fat chicks."</span> - Neil Patel.</p>
+                            <h4 class="text-default">Engineering</h4>
+                        </div>
+                        <div class="col-lg-4 text-center">
+                            <img class="img-rounded img-responsive img-center img-resize-6" src="/img/angad.jpg" alt="">
+                            <a href="#"><h3 class="text-primary">Angad Chadha</h3></a>
+                            <p><span class="italic">"I like fat chicks."</span> - Angad Chadha.</p>
+                            <h4 class="text-default">Marketing and Research</h4>
+                        </div>
+                        <div class="col-lg-4 text-center">
+                            <img class="img-rounded img-responsive img-center img-resize-6" src="/img/megan_murray.jpg" alt="">
+                            <a href="#"><h3 class="text-primary">Megan Murray</h3></a>
+                            <p><span class="italic">"I like fat chicks."</span> - Megan Murray.</p>
+                            <h4 class="text-default">Writing Operations</h4>
+                        </div>
+                        <div class="col-lg-12 text-center">
+                            <img class="img-rounded img-responsive img-center img-resize-6" src="/img/amir_kapadia.jpg" alt="">
+                            <a href="#"><h3 class="text-primary">Amir Kapadia</h3></a>
+                            <p><span class="italic">"I like fat chicks."</span> - Amir Kapadia.</p>
+                            <h4 class="text-default">Writing Operations</h4>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -179,11 +197,13 @@
 
 
         <!--templates-->
+        <!-- landlord-list -->
         <script type="text/template" id="landlord-list-template">
             <h1>Landlords</h1>
+            <h3>Here is a current list of all the landlord accounts:</h3>
             <div id="landlord-list">
                 <% _.each(landlords, function(landlord){ %>
-                    <div id=<%=landlord.username%> class="landlord">
+                    <div id=<%=landlord.username%> class="size-1-5">
                         <% if (landlord.companyname) %>
                             <a href=<%= "/landlords/" + landlord.username %>><%= landlord.companyname %> </a> 
                         <% else %>
@@ -193,14 +213,85 @@
             </div>
         </script>
 
+        <!--student list -->
+        <script type="text/template" id="student-list-template">
+            <h1>Students</h1>
+            <h3>Here is a list of all the current student accounts:</h3>
+            <div id="student-list">
+                <% _.each(students, function(student){ %>
+                    <div id=<%=student.username%> class="size-1-5">
+                        <a href=<%= "/students/" + student.username %>><%= student.username %></a>
+                    </div>
+                <% }); %>
+            </div>
+        </script>
+
+        <!--sign up page -->
+        <script type="text/template" id="sign-up-form">
+            <h1>Sign Up</h1>
+            <form id="signup" class="sign-up-form">
+                <label class="input-label">User Account Type</label> 
+                <select id="type" name="type" class="input input-select"> 
+                    <option class="input-option" value="student">Student</option>
+                    <option class="input-option" value="landlord">Landlord</option>
+                </select> <br/>
+                <input class="input input-text" type="text" id="firstname" name="firstname" placeholder="First Name">
+                <input class="input input-text" type="text" id="lastname" name="lastname" placeholder="Last Name">
+                <input class="input input-text" type="text" id="username" name="username" placeholder="Username">
+                <input class="input input-text" type="email" id="email" name="email" placeholder="Email">
+                <input class="input input-text" type="password" id="password" name="password" placeholder="Password">
+                <label class="input-label">Years at College:</label> <select id ="yearsAtCollege" name="yearsAtCollege" class="input input-select">
+                    <option value="0">0-1 years</option>
+                    <option value="1">1-2 years</option>
+                    <option value="2">2-3 years</option>
+                    <option value="3">3-4 years</option>
+                    <option value="4">4-5 years</option>
+                </select> <br/>
+                <label class="input-label">Years Off Campus:</label> <select id="yearsOffCampus" name="yearsOffCampus" class="input input-select">
+                    <option value="0">0-1 years</option>
+                    <option value="1">1-2 years</option>
+                    <option value="2">2-3 years</option>
+                    <option value="3">3-4 years</option>
+                    <option value="4">4-5 years</option>
+                </select> <br/>
+                <label class="input-label">Are you currently off-campus?</label> <select id="currentlyOffCampus" name="currentlyOffCampus" class="input input-select">
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select><br/>
+                <button type="button" id="sign-up-button" class="btn btn-primary">Sign Up</button>
+            </form>
+        </script>
+
+        <!--log in page-->
+        <script type="text/template" id="log-in-form">
+
+        </script>
+
+        <!-- landlord profile page -->
+        <script type="text/template" id="landlord-profile">
+
+        </script>
+
+        <!-- student profile page -->
+        <script text="text/template" id="student-profile">
+
+        </script>
+
         <!--javascript files-->
         <script src="/js/config.js"></script>
 
         <!--models-->
         <script src="/js/models/landlords.js"></script>
+        <script src="/js/models/landlord.js"></script>
+        <script src="/js/models/students.js"></script>
+        <script src="/js/models/student.js"></script>
 
         <!--views-->
+        <script src="/js/views/landlordsView.js"></script>
         <script src="/js/views/landlordView.js"></script>
+        <script src="/js/views/studentsView.js"></script>
+        <script src="/js/views/studentView.js"></script>
+        <script src="/js/views/signUpView.js"></script>
 
         <!--router-->
         <script src="/js/router.js"></script>
