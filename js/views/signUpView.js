@@ -9,6 +9,7 @@ var SignUpView = Backbone.View.extend({
         'change #type': 'typeChange'
     }, 
     signUp: function(event){
+
         //load form variables -- need to automate this
         var user = {} 
         user.type = document.getElementById("type").value;
@@ -39,35 +40,20 @@ var SignUpView = Backbone.View.extend({
             }
         }
 
-        //create path
-        var path = "http://localhost/api/" + user.type + "s/register";
-        console.log(path);
+        var path = "/" + user.type + "s/register";
+        var userRoute = "/" + user.type + "s/" + user.username;
 
-        //create ajax request
-        var request = new XMLHttpRequest();
-        request.open("POST", path, true);
-        request.setRequestHeader("Content-type", "application/json");
-        request.onreadystatechange = function(){
-            var response = JSON.parse(request.responseText);
-
-            if(request.status == 401){
-                //error in registration
-                alert("bad registration");
-                return false; 
+        $.ajax({
+            url: path, 
+            type: "POST",
+            dataType: "json", 
+            data: user, 
+            success: function(body){
+                router.navigate(userRoute, {trigger: true});
             }
+        });
 
-
-            var userRoute = "/" + user.type + "s/" + user.username; 
-
-            console.log(userRoute);
-
-            //good sign up -- redirect to profile page.
-            router.navigate(userRoute, {trigger: true});
-
-            //return false; 
-
-        };
-        request.send(JSON.stringify(user));
+        return false; 
     },
     typeChange: function(event){
         console.log(event.currentTarget.value);
