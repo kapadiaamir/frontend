@@ -9,7 +9,7 @@ var SignUpView = Backbone.View.extend({
         'change #type': 'typeChange'
     }, 
     signUp: function(event){
-        //load form variables and validate data
+        //load form variables -- need to automate this
         var user = {} 
         user.type = document.getElementById("type").value;
         user.username = document.getElementById("username").value; 
@@ -27,6 +27,16 @@ var SignUpView = Backbone.View.extend({
         if(user.type == "landlord"){
             user.companyname = document.getElementById("companyname").value; 
             user.yearsInService = document.getElementById("yearsInService").value; 
+            user.phone = document.getElementById("phone").value; 
+        }
+
+        //validate data
+        var userKeys = Object.keys(user);
+        for(key in userKeys){
+            if(user[userKeys[key]] == undefined || user[userKeys[key]].length == 0){
+                alert("Must enter a " + userKeys[key]);
+                break; 
+            }
         }
 
         //create path
@@ -40,19 +50,19 @@ var SignUpView = Backbone.View.extend({
         request.onreadystatechange = function(){
             var response = JSON.parse(request.responseText);
 
-            if(request.status == 403){
+            if(request.status == 401){
                 //error in registration
-                alert("bad registration")
+                alert("bad registration");
                 return false; 
             }
 
 
-            var userRoute = "/students/" + user.username; 
+            var userRoute = "/" + user.type + "s/" + user.username; 
 
             console.log(userRoute);
 
             //good sign up -- redirect to profile page.
-            router.navigate(userRoute, true);
+            router.navigate(userRoute, {trigger: true});
 
             //return false; 
 
@@ -72,6 +82,7 @@ var SignUpView = Backbone.View.extend({
             document.getElementById("currentlyOffCampus").style.display = "";
             document.getElementById("yearsInService").style.display = "none";
             document.getElementById("companyname").style.display = "none";
+            document.getElementById("phone").style.display = "none";
         }
         else if(type == "landlord"){
             document.getElementById("yearsOffCampus").style.display = "none";
@@ -82,6 +93,7 @@ var SignUpView = Backbone.View.extend({
             document.getElementById("currentlyOffCampus").style.display = "none";
             document.getElementById("yearsInService").style.display = "";
             document.getElementById("companyname").style.display = "";
+            document.getElementById("phone").style.display = "";
         }
         else{
             //do nothing 

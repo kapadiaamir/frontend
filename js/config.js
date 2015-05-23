@@ -21,12 +21,12 @@ $.fn.serializeObject = function() {
 var Router = Backbone.Router.extend({
     routes: {
         '' : 'home',
-        'landlords' : 'landlords',
-        'students': 'students',
-        'landlords/:username': 'landlord',
-        'students/:username': 'student',
-        'signup': 'signup',
-        'login': 'login'
+        'landlords(/)' : 'landlords',
+        'students(/)': 'students',
+        'landlords/:username(/)': 'landlord',
+        'students/:username(/)': 'student',
+        'signup': 'signup(/)',
+        'login': 'login(/)'
     }
 });
 
