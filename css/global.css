@@ -49,6 +49,11 @@
     font-size: 1.3em;
 }
 
+.border { 
+    border: 2px black solid;
+    border-radius: 15px; 
+}
+
 .v-center { 
     transform: translate(0, 50%);
 }

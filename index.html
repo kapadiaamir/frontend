@@ -195,35 +195,6 @@
 
 
         <!--templates-->
-        <!-- landlord-list -->
-        <script type="text/template" id="landlord-list-template">
-            <h1>Landlords</h1>
-            <h3>Here is a current list of all the landlord accounts:</h3>
-            <div id="landlord-list">
-                <% _.each(landlords, function(landlord){ %>
-                    <div id=<%=landlord.username%> class="size-1-5">
-                        <% if (landlord.companyname) %>
-                            <a href=<%= "/landlords/" + landlord.username %>><%= landlord.companyname %> </a> 
-                        <% else %>
-                            <a href=<%= "/landlords/" + landlord.username %>><%=landlord.firstname + " " + landlord.lastname %></a>
-                    </div>
-                <% }); %>
-            </div>
-        </script>
-
-        <!--student list -->
-        <script type="text/template" id="student-list-template">
-            <h1>Students</h1>
-            <h3>Here is a list of all the current student accounts:</h3>
-            <div id="student-list">
-                <% _.each(students, function(student){ %>
-                    <div id=<%=student.username%> class="size-1-5">
-                        <a href=<%= "/students/" + student.username %>><%= student.username %></a>
-                    </div>
-                <% }); %>
-            </div>
-        </script>
-
         <!--sign up page -->
         <script type="text/template" id="sign-up-form">
             <h1>Sign Up</h1>
@@ -265,16 +236,44 @@
 
         <!--log in page-->
         <script type="text/template" id="log-in-page">
-        <h1> Login </h1>
-        <input class= "input input-text" type="text" id="username" name="username" placeholder="Username">
-        <input class="input input-text" type="password" id="password" name="password" placeholder="Password">
-        <label class="input-label">User Account Type</label> 
-        <select id="type" name="type" class="input input-select"> 
-            <option class="input-option" value="student">Student</option>
-            <option class="input-option" value="landlord">Landlord</option>
-        </select>
-        <button type="button" id="login-button" class="btn btn-primary button size-1-5">Login</button>
+            <h1> Login </h1>
+            <input class= "input input-text" type="text" id="username" name="username" placeholder="Username">
+            <input class="input input-text" type="password" id="password" name="password" placeholder="Password">
+            <label class="input-label">User Account Type</label> 
+            <select id="type" name="type" class="input input-select"> 
+                <option class="input-option" value="student">Student</option>
+                <option class="input-option" value="landlord">Landlord</option>
+            </select>
+            <button type="button" id="login-button" class="btn btn-primary button size-1-5">Login</button>
+        </script>
 
+        <!-- landlord-list -->
+        <script type="text/template" id="landlord-list-template">
+            <h1>Landlords</h1>
+            <h3>Here is a current list of all the landlord accounts:</h3>
+            <div id="landlord-list">
+                <% _.each(landlords, function(landlord){ %>
+                    <div id=<%=landlord.username%> class="size-1-5">
+                        <% if (landlord.companyname) %>
+                            <a href=<%= "/landlords/" + landlord.username %>><%= landlord.companyname %> </a> 
+                        <% else %>
+                            <a href=<%= "/landlords/" + landlord.username %>><%=landlord.firstname + " " + landlord.lastname %></a>
+                    </div>
+                <% }); %>
+            </div>
+        </script>
+
+        <!--student list -->
+        <script type="text/template" id="student-list-template">
+            <h1>Students</h1>
+            <h3>Here is a list of all the current student accounts:</h3>
+            <div id="student-list">
+                <% _.each(students, function(student){ %>
+                    <div id=<%=student.username%> class="size-1-5">
+                        <a href=<%= "/students/" + student.username %>><%= student.username %></a>
+                    </div>
+                <% }); %>
+            </div>
         </script>
 
         <!-- landlord profile page -->
@@ -285,7 +284,25 @@
 
         <!-- student profile page -->
         <script text="text/template" id="student-profile">
-
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12">
+                    <h1><%= student.username %></h1>
+                </div> 
+            </div> 
+            <div class="row text-center ">
+                <div class="col-lg-10">
+                    <div class="col-lg-2"></div>
+                    <div class="col-lg-2">
+                        <img src="http://budapesttimes.hu/wp-content/themes/newsroom14/img/placeholder.png" alt="landlord face" class="img-center img-rounded img-responsive"/>
+                    </div>
+                    <div class="col-lg-8 border">
+                        <p> <%= student.firstname %> </p>
+                        <p> <%= student.lastname %> </p>
+                    </div>
+                </div>
+            </div>
+        </div>
         </script>
 
         <!--javascript files-->

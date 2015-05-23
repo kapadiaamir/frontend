@@ -1,8 +1,16 @@
 var StudentView = Backbone.View.extend({
     el: '#content', 
     render: function(options){
-        console.log(options)
-        this.$el.html("user goes here! " + options.username);
+        var that = this; 
+        that.student = new Student({"id": options.username});
+        that.student.fetch({
+            success: function(student){
+                //console.log(student);
+                console.log(student.attributes.student);
+                var template = _.template($('#student-profile').html())({ student: student.attributes.student });
+                that.$el.html(template); 
+            }  
+        })
     }
 });
 
