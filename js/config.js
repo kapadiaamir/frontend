@@ -25,8 +25,8 @@ var Router = Backbone.Router.extend({
         'students(/)': 'students',
         'landlords/:username(/)': 'landlord',
         'students/:username(/)': 'student',
-        'signup': 'signup(/)',
-        'login': 'login(/)'
+        'signup(/)': 'signup',
+        'login(/)': 'login'
     }
 });
 
