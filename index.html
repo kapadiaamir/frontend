@@ -289,8 +289,33 @@
 
         <!-- landlord profile page -->
         <script type="text/template" id="landlord-profile">
-
-
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1><%= landlord.username %>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-10">
+                        <div class="col-lg-2 col-lg-offset-2">
+                            <img src="http://budapesttimes.hu/wp-content/themes/newsroom14/img/placeholder.png" alt="landlord face" class="img-center img-rounded img-responsive"/>
+                        </div>
+                        <div class="col-lg-8 border">
+                            <h2>Landlord Informations</h2>
+                        </div>
+                    </div>
+                </div>
+                <% _.each(reviews, function(review){ %>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h1 class="services-heading"><%=review.title%></h1> 
+                        </div>
+                        <div class="col-lg-12">
+                            <p class="message"><%=reivew.content%></h1>
+                        </div> 
+                    </div> 
+                <% }); %>
+            </div>
         </script>
 
         <!-- student profile page -->
@@ -303,8 +328,7 @@
             </div> 
             <div class="row text-center">
                 <div class="col-lg-10">
-                    <div class="col-lg-2"></div>
-                    <div class="col-lg-2">
+                    <div class="col-lg-2 col-lg-offset-2">
                         <img src="http://budapesttimes.hu/wp-content/themes/newsroom14/img/placeholder.png" alt="landlord face" class="img-center img-rounded img-responsive"/>
                     </div>
                     <div class="col-lg-8 border">
