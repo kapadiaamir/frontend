@@ -2,6 +2,10 @@ router.on('route:home', function(){
     console.log("loading homepage"); 
 });
 
+router.on('route:search', function(){
+    searchView.render(); 
+});
+
 router.on('route:landlords', function(){
     landlordList.render();
 }); 

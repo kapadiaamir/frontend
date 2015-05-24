@@ -10,7 +10,7 @@ var StudentView = Backbone.View.extend({
                 var template = _.template($('#student-profile').html())({ student: student.attributes.student });
                 that.$el.html(template); 
             }  
-        })
+        });
     }
 });
 

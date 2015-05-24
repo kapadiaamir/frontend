@@ -21,6 +21,7 @@ $.fn.serializeObject = function() {
 var Router = Backbone.Router.extend({
     routes: {
         '' : 'home',
+        'search': 'search',
         'landlords(/)' : 'landlords',
         'students(/)': 'students',
         'landlords/:username(/)': 'landlord',

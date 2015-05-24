@@ -29,6 +29,24 @@
     height:100%;
 }
 
+#search-form {
+    height: 70%;
+}
+
+.search-text { 
+    font-size: 2.5em; 
+    width: 45%;
+    border-bottom-style: solid;
+    border-bottom-width: 5px;
+    border-bottom-color: black;
+}
+
+#search-btn { 
+    font-size: 2.5em;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+}
+
 .title {
     font-size: 2.5em;
     padding-bottom: 2%;
