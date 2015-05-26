@@ -11,8 +11,8 @@ router.on('route:landlords', function(){
 }); 
 
 router.on('route:landlord', function(username){
-    console.log(username);
-    landlordView.render();
+    //console.log(username);
+    landlordView.render({'username': username});
 });
 
 router.on('route:students', function(){
@@ -20,7 +20,7 @@ router.on('route:students', function(){
 });
 
 router.on('route:student', function(username){
-    console.log("router: " + username);
+    //console.log("router: " + username);
     studentView.render({'username': username});
 });
 
