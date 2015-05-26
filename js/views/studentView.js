@@ -6,7 +6,8 @@ var StudentView = Backbone.View.extend({
         that.student.fetch({
             success: function(student){
                 //console.log(student);
-                var template = _.template($('#student-profile').html())({ student: student.attributes.student });
+                that.student = student.attributes.student; 
+                var template = _.template($('#student-profile').html())({ student: that.student});
                 that.$el.html(template); 
                 that.loadReviews();
             }
@@ -16,10 +17,12 @@ var StudentView = Backbone.View.extend({
         var reviews = document.getElementById("reviews"); 
         console.log(reviews);
         var student_review_path = "/students/" + this.student.username + "/reviews"; 
+        console.log(student_review_path);
         $.ajax({
             url: student_review_path, 
             type: 'GET', 
             success: function(body){ 
+                console.log(body); 
                 if(body.status == false){ //student hasn't written any reviews
                     var p_message = document.createElement("P"); 
                     var p_message_text = document.createTextNode("This student has not written any reviews yet."); 
@@ -65,14 +68,14 @@ var StudentView = Backbone.View.extend({
                         var panel_body_text = document.createTextNode(review.content);
                         var panel_footer_pre_text = document.createTextNode("For: ");
                         var panel_footer_username_text = document.createTextNode(review.landlordId); 
-                        var panel_footer_post_text = document.createTextNode(" on " + review.date);
+                        var panel_footer_post_text = document.createTextNode(" on " + new Date(review.date).toDateString());
 
                         //add attributes
-                        panel.setAttribute("class", "panel panel-default"); 
+                        panel.setAttribute("class", "panel panel-default col-lg-8 col-lg-offset-2 text-left"); 
                         panel_heading.setAttribute("class", "panel-heading"); 
                         panel_title.setAttribute("class", "panel-title"); 
                         panel_body.setAttribute("class", "panel-body"); 
-                        panel_footer.setAttribute("class", "panel-footer"); 
+                        panel_footer.setAttribute("class", "panel-footer text-center"); 
                         panel_footer_p.setAttribute("class", "footer_string"); 
                         panel_footer_userlink.setAttribute("href", landlord_path); 
 
@@ -90,6 +93,8 @@ var StudentView = Backbone.View.extend({
                         panel.appendChild(panel_heading);
                         panel.appendChild(panel_body); 
                         panel.appendChild(panel_footer);
+
+                        reviews.appendChild(panel);
                     }
                 }
             }
