@@ -11,7 +11,6 @@ var LandlordView = Backbone.View.extend({
 
                 that.firstClick = false; 
  
-
                 var template = _.template($("#landlord-profile").html())({'landlord': landlord});
                 that.$el.html(template);
             }
@@ -179,7 +178,51 @@ var LandlordView = Backbone.View.extend({
                     do_reviews.appendChild(p_message);
                 }
                 else{ //landlord has reviews
-                    console.log(body);
+                   //for each review, create a panel and appendChild it to reviews
+                    for(index in body.reviews){
+                        var review = body.reviews[index]; 
+
+                        var student_path = "/students/" + review.studentId; 
+
+                        //create panel and interior elements
+                        var panel = document.createElement("DIV");
+                        var panel_heading = document.createElement("DIV");
+                        var panel_title = document.createElement("H3"); 
+                        var panel_body = document.createElement("DIV"); 
+                        var panel_footer = document.createElement("DIV"); 
+                        var panel_footer_p = document.createElement("P");
+                        var panel_footer_userlink = document.createElement("A");
+
+                        var panel_title_text = document.createTextNode(review.title);
+                        var panel_body_text = document.createTextNode(review.content);
+                        var panel_footer_pre_text = document.createTextNode("By: ");
+                        var panel_footer_username_text = document.createTextNode(review.studentId); 
+                        var panel_footer_post_text = document.createTextNode(" on " + review.date);
+
+                        //add attributes
+                        panel.setAttribute("class", "panel panel-default"); 
+                        panel_heading.setAttribute("class", "panel-heading"); 
+                        panel_title.setAttribute("class", "panel-title"); 
+                        panel_body.setAttribute("class", "panel-body"); 
+                        panel_footer.setAttribute("class", "panel-footer"); 
+                        panel_footer_p.setAttribute("class", "footer_string"); 
+                        panel_footer_userlink.setAttribute("href", student_path); 
+
+                        //add text nodes
+                        panel_title.appendChild(panel_title_text);
+                        panel_body.appendChild(panel_body_text);
+                        panel_footer_p.appendChild(panel_footer_pre_text); 
+                        panel_footer_userlink.appendChild(panel_footer_username_text);
+                        panel_footer_p.appendChild(panel_footer_userlink);
+                        panel_footer_p.appendChild(panel_footer_post_text);
+
+                        //scale in children 
+                        panel_heading.appendChild(panel_title); 
+                        panel_footer.appendChild(panel_footer_p);
+                        panel.appendChild(panel_heading);
+                        panel.appendChild(panel_body); 
+                        panel.appendChild(panel_footer);
+                    }
                 }
             }
         }); 
