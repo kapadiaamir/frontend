@@ -5,7 +5,7 @@ var LandlordList = Backbone.View.extend({
         var landlords = new Landlords(); 
         landlords.fetch({
             success: function(landlords){
-                console.log(landlords.models[0].get('landlords'));
+                console.log(1);
                 
                 var template = _.template($('#landlord-list-template').html())({ landlords: landlords.models[0].get('landlords')});
                 that.$el.html(template);

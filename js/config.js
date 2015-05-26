@@ -21,6 +21,7 @@ $.fn.serializeObject = function() {
 var Router = Backbone.Router.extend({
     routes: {
         '' : 'home',
+        'search': 'search',
         'landlords(/)' : 'landlords',
         'students(/)': 'students',
         'landlords/:username(/)': 'landlord',
@@ -31,3 +32,15 @@ var Router = Backbone.Router.extend({
 });
 
 var router = new Router(); 
+
+$.ajaxSetup({
+  statusCode: {
+    401: function(){
+      //redirect to login page
+      router.navigate('/login', {trigger: true})
+    }, 
+    403: function(){
+      alert("You are not allowed to do that!");
+    }
+  }
+})

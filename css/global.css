@@ -29,9 +29,43 @@
     height:100%;
 }
 
+#search-form {
+    height: 70%;
+}
+
+.search-text { 
+    font-size: 2.5em; 
+    width: 45%;
+    border-bottom-style: solid;
+    border-bottom-width: 5px;
+    border-bottom-color: black;
+}
+
+#search-btn { 
+    font-size: 2.5em;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+}
+
+.scarlet { 
+    color: red;
+}
+
 .title {
     font-size: 2.5em;
     padding-bottom: 2%;
+}
+
+#create-review {
+    margin: 2% auto;
+}
+
+.review-content { 
+    margin: 1% auto;
+    border: 2px black solid;
+    border-radius: 5px;
+    padding: 2%;
+    font-size: 1.5em;
 }
 
 .size-1-5 {
@@ -47,6 +81,11 @@
     padding-bottom: 20px;
     color: #000;
     font-size: 1.3em;
+}
+
+.border { 
+    border: 2px black solid;
+    border-radius: 15px; 
 }
 
 .v-center { 

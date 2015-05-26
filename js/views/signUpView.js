@@ -6,15 +6,15 @@ var SignUpView = Backbone.View.extend({
     }, 
     events: {
         'click #sign-up-button': 'signUp', 
-        'change #type': 'typeChange'
+        'change #type': 'typeChange',
+        'change #company-or-person': 'companyOrPerson'
     }, 
     signUp: function(event){
+
         //load form variables -- need to automate this
         var user = {} 
         user.type = document.getElementById("type").value;
         user.username = document.getElementById("username").value; 
-        user.firstname = document.getElementById("firstname").value; 
-        user.lastname = document.getElementById("lastname").value; 
         user.email = document.getElementById("email").value; 
         user.password = document.getElementById("password").value;
 
@@ -22,12 +22,21 @@ var SignUpView = Backbone.View.extend({
             user.yearsAtCollege = document.getElementById("yearsAtCollege").value; 
             user.yearsOffCampus = document.getElementById("yearsOffCampus").value; 
             user.currentlyOffCampus = document.getElementById("currentlyOffCampus").value;
+            user.firstname = document.getElementById("firstname").value; 
+            user.lastname = document.getElementById("lastname").value; 
         }
 
         if(user.type == "landlord"){
-            user.companyname = document.getElementById("companyname").value; 
             user.yearsInService = document.getElementById("yearsInService").value; 
             user.phone = document.getElementById("phone").value; 
+            var l_type = document.getElementById("company-or-person").value; 
+            if(l_type == "company"){
+                user.companyname = document.getElementById("companyname").value;
+            }
+            else{
+                user.firstname = document.getElementById("firstname").value; 
+                user.lastname = document.getElementById("lastname").value; 
+            }
         }
 
         //validate data
@@ -39,35 +48,20 @@ var SignUpView = Backbone.View.extend({
             }
         }
 
-        //create path
-        var path = "http://localhost/api/" + user.type + "s/register";
-        console.log(path);
+        var path = "/" + user.type + "s/register";
+        var userRoute = "/" + user.type + "s/" + user.username;
 
-        //create ajax request
-        var request = new XMLHttpRequest();
-        request.open("POST", path, true);
-        request.setRequestHeader("Content-type", "application/json");
-        request.onreadystatechange = function(){
-            var response = JSON.parse(request.responseText);
-
-            if(request.status == 401){
-                //error in registration
-                alert("bad registration");
-                return false; 
+        $.ajax({
+            url: path, 
+            type: "POST",
+            dataType: "json", 
+            data: user, 
+            success: function(body){
+                router.navigate(userRoute, {trigger: true});
             }
+        });
 
-
-            var userRoute = "/" + user.type + "s/" + user.username; 
-
-            console.log(userRoute);
-
-            //good sign up -- redirect to profile page.
-            router.navigate(userRoute, {trigger: true});
-
-            //return false; 
-
-        };
-        request.send(JSON.stringify(user));
+        return false; 
     },
     typeChange: function(event){
         console.log(event.currentTarget.value);
@@ -80,9 +74,14 @@ var SignUpView = Backbone.View.extend({
             document.getElementById("yearsAtCollege-label").style.display = "";
             document.getElementById("currentlyOffCampus-label").style.display = "";
             document.getElementById("currentlyOffCampus").style.display = "";
+            document.getElementById("firstname").style.display = "";
+            document.getElementById("lastname").style.display = "";
+            document.getElementById("company-or-person-label").style.display = "none";
             document.getElementById("yearsInService").style.display = "none";
             document.getElementById("companyname").style.display = "none";
             document.getElementById("phone").style.display = "none";
+            document.getElementById("company-or-person").style.display = "none";
+            document.getElementById("company-or-person-label").style.display = "none";
         }
         else if(type == "landlord"){
             document.getElementById("yearsOffCampus").style.display = "none";
@@ -91,13 +90,31 @@ var SignUpView = Backbone.View.extend({
             document.getElementById("yearsAtCollege-label").style.display = "none";
             document.getElementById("currentlyOffCampus-label").style.display = "none";
             document.getElementById("currentlyOffCampus").style.display = "none";
+            document.getElementById("firstname").style.display = "none";
+            document.getElementById("lastname").style.display = "none";
             document.getElementById("yearsInService").style.display = "";
             document.getElementById("companyname").style.display = "";
             document.getElementById("phone").style.display = "";
+            document.getElementById("company-or-person").style.display = "";
+            document.getElementById("company-or-person-label").style.display = "";
         }
         else{
             //do nothing 
             return false; 
+        }
+    }, 
+    companyOrPerson: function(event){
+        var type = event.currentTarget.value; 
+
+        if(type == "company"){
+            document.getElementById("companyname").style.display = ""; 
+            document.getElementById("firstname").style.display = "none";
+            document.getElementById("lastname").style.display = "none"; 
+        }
+        else if(type == "individual"){
+            document.getElementById("companyname").style.display = "none";
+            document.getElementById("firstname").style.display = "";
+            document.getElementById("lastname").style.display = "";
         }
     }
 })
