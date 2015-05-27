@@ -35,20 +35,6 @@ var StudentView = Backbone.View.extend({
                     reviews.appendChild(p_message);
                 }
                 else { //student has reviews
-                    /* 
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title"> title </h3>
-                        </div>
-                        <div class="panel-body">
-                            content
-                        </div>
-                        <div class="panel-footer">
-                            <p class="footer-string">By: <a href="username">username</a> on #date# </p>
-                        </div>
-                    </div>
-                    */ 
-                    
                     //for each review, create a panel and appendChild it to reviews
                     for(index in body.reviews){
                         var review = body.reviews[index]; 

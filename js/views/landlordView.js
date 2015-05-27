@@ -12,8 +12,6 @@ var LandlordView = Backbone.View.extend({
  
                 var template = _.template($("#landlord-profile").html())({'landlord': that.landlord});
                 that.$el.html(template);
-
-                that.loadReviews(that.landlord);
             
                 $.ajax({
                     url: '/currentUser', 
@@ -45,6 +43,9 @@ var LandlordView = Backbone.View.extend({
 
                         if(body.status == true){
                             that.user = body.user; 
+
+                            //enable a log out button
+                            document.getElementById("logout").style.display = "";
 
                             if(that.user.type == "landlord"){ //logged in user is a landlord
                                 //write error message
@@ -112,6 +113,7 @@ var LandlordView = Backbone.View.extend({
                                 createReview.appendChild(button_row);
                             }
                         }
+                        that.loadReviews(that.landlord);
                     }
                 });
             }
@@ -120,7 +122,9 @@ var LandlordView = Backbone.View.extend({
     events: {
         'focus #review-content': 'clear', 
         'click #submit-review': 'sendReview', 
-        'click .editbtn': 'editReview'
+        'click .editbtn': 'editReview', 
+        'click .cancel-edit': 'cancelEdit', 
+        'click .submit-edit': 'submitEdit'
     }, 
     clear: function(event){
         if(!this.firstClick) event.currentTarget.value = "";
@@ -176,6 +180,7 @@ var LandlordView = Backbone.View.extend({
     loadReviews: function(landlord){
         //load reviews for landlord
         var reviewPath = "/landlords/" + landlord.username + "/reviews";
+        var that = this; 
         $.ajax({
             url: reviewPath, 
             type: 'GET',
@@ -187,7 +192,7 @@ var LandlordView = Backbone.View.extend({
                 console.log(body);
 
                 while(do_reviews.firstChild){
-                    do_reviews.removeNode(do_reviews.firstChild);
+                    do_reviews.removeChild(do_reviews.firstChild);
                 }
                 if(body.status == false){ //no reviews
 
@@ -209,22 +214,29 @@ var LandlordView = Backbone.View.extend({
 
                         var student_path = "/students/" + review.studentId; 
 
+                        //check if user is the student
+                        var isStudent = that.user.type == "student" ? true : false; 
+                        isStudent = (isStudent && (that.user.username == review.studentId)) ? true : false; 
+
                         //create panel and interior elements
                         var panel = document.createElement("DIV");
                         var panel_heading = document.createElement("DIV");
                         var panel_title = document.createElement("H3"); 
                         var panel_body = document.createElement("DIV"); 
+                        var panel_body_p = document.createElement("P");
                         var panel_footer = document.createElement("DIV"); 
                         var panel_footer_p = document.createElement("P");
                         var panel_footer_userlink = document.createElement("A");
-                        var edit_button = document.createElement("BUTTON"); 
+                        var edit_button; 
+                        if(isStudent) edit_button = document.createElement("BUTTON"); 
 
                         var panel_title_text = document.createTextNode(review.title);
                         var panel_body_text = document.createTextNode(review.content);
                         var panel_footer_pre_text = document.createTextNode("By: ");
                         var panel_footer_username_text = document.createTextNode(review.studentId); 
                         var panel_footer_post_text = document.createTextNode(" on " + new Date(review.date).toDateString());
-                        var edit_button_text = document.createTextNode("Edit");
+                        var edit_button_text; 
+                        if(isStudent) edit_button_text = document.createTextNode("Edit");
 
                         //add attributes
                         panel.setAttribute("class", "panel panel-default col-lg-8 col-lg-offset-2 text-left"); 
@@ -232,26 +244,27 @@ var LandlordView = Backbone.View.extend({
                         panel_title.setAttribute("class", "panel-title col-lg-10"); 
                         panel_title.setAttribute("id", "title_" + review._id);
                         panel_body.setAttribute("class", "panel-body"); 
-                        panel_body.setAttribute("id", "body_" + review._id);
+                        panel_body_p.setAttribute("id", "body_" + review._id);
                         panel_footer.setAttribute("class", "panel-footer text-center"); 
                         panel_footer_p.setAttribute("class", "footer_string"); 
                         panel_footer_userlink.setAttribute("href", student_path); 
-                        edit_button.setAttribute("class", "btn btn-primary editbtn col-lg-1");
-                        edit_button.setAttribute("id", "edit_" + review._id);
+                        if(isStudent) edit_button.setAttribute("class", "btn btn-primary editbtn col-lg-1");
+                        if(isStudent) edit_button.setAttribute("id", "edit_" + review._id);
                         panel.setAttribute("id", review._id);
 
                         //add text nodes
                         panel_title.appendChild(panel_title_text);
-                        panel_body.appendChild(panel_body_text);
+                        panel_body_p.appendChild(panel_body_text);
                         panel_footer_p.appendChild(panel_footer_pre_text); 
                         panel_footer_userlink.appendChild(panel_footer_username_text);
                         panel_footer_p.appendChild(panel_footer_userlink);
                         panel_footer_p.appendChild(panel_footer_post_text);
-                        edit_button.appendChild(edit_button_text);
+                        if(isStudent) edit_button.appendChild(edit_button_text);
 
                         //scale in children 
                         panel_heading.appendChild(panel_title); 
-                        panel_heading.appendChild(edit_button);
+                        if(isStudent) panel_heading.appendChild(edit_button);
+                        panel_body.appendChild(panel_body_p);
                         panel_footer.appendChild(panel_footer_p);
                         panel.appendChild(panel_heading);
                         panel.appendChild(panel_body); 
@@ -267,18 +280,97 @@ var LandlordView = Backbone.View.extend({
     editReview: function(event){
         //get the review Id to edit
         var btn = event.currentTarget; 
+        btn.style.display = "none";
         var reviewId = btn.id.split("_")[1];
 
         //get the elements to remove and replace with input fields
         var title = document.getElementById("title_" + reviewId); 
         var body  = document.getElementById("body_" + reviewId);
 
+        //get parents
+        var titleParent = title.parentNode; 
+        var bodyParent = body.parentNode; 
+
+        //grab old text
+        var title_old_text = title.innerHTML; 
+        var body_old_text = body.innerHTML; 
+
+        //hide the old title and body
         title.style.display = "none";
         body.style.display = "none";
 
+        //create title and body inputs
+        var title_input = document.createElement("INPUT"); 
+        var body_input = document.createElement("TEXTAREA"); 
+        var submit_edit = document.createElement("BUTTON"); 
+        var cancel_edit = document.createElement("BUTTON"); 
+        var button_row = document.createElement("DIV");
+        var input_row = document.createElement("DIV"); 
 
+        //create text nodes for body and button
+        var body_input_text = document.createTextNode(body_old_text); 
+        var submit_edit_text = document.createTextNode("Submit Edit"); 
+        var cancel_edit_text = document.createTextNode("Cancel Edit");
 
+        //set attributes
+        title_input.setAttribute("class", "input input-text");
+        title_input.setAttribute("id", "edit-title_" + reviewId); 
+        title_input.setAttribute("value", title_old_text);
+        body_input.setAttribute("id", "edit-body_" + reviewId);
+        body_input.setAttribute("class", "review-content col-lg-12");
+        body_input.setAttribute("cols", "75");
+        body_input.setAttribute("rows", "5");
+        button_row.setAttribute("class", "row");
+        input_row.setAttribute("class", "row"); 
+        submit_edit.setAttribute("id", "submit-edit_" + reviewId);
+        cancel_edit.setAttribute("id", "cancel-edit_" + reviewId);
+        submit_edit.setAttribute("class", "submit-edit btn btn-primary col-lg-2 col-lg-offset-1");
+        cancel_edit.setAttribute("class", "cancel-edit btn btn-danger col-lg-2 col-lg-offset-7");
 
+        //button texts
+        submit_edit.appendChild(submit_edit_text); 
+        cancel_edit.appendChild(cancel_edit_text);
+
+        //add children to screen
+        titleParent.appendChild(title_input); 
+        body_input.appendChild(body_input_text);
+        input_row.appendChild(body_input);
+        bodyParent.appendChild(input_row);
+        button_row.appendChild(cancel_edit);
+        button_row.appendChild(submit_edit);
+        bodyParent.appendChild(button_row);
+    }, 
+    submitEdit: function(event){
+
+        var that = this;
+        //grab the review id
+        var reviewId = event.currentTarget.id.split("_")[1];
+
+        //get the updated title and body
+        var review = {}; 
+        review.title = document.getElementById("edit-title_" + reviewId).value;
+        review.content = document.getElementById("edit-body_" + reviewId).value;
+
+        $.ajax({
+            url: "/reviews/" + reviewId, 
+            type: "PUT", 
+            dataType: 'json', 
+            data: review,
+            success: function(body){
+                if(body.status == false){
+                    alert("Fuck. An error occured!");
+                }
+                else{
+                    alert("Review Updated Successfully");
+                    that.loadReviews(that.landlord);
+                }
+            }
+        });
+        
+    },  
+    cancelEdit: function(event){
+        //grab the review id 
+        var reviewId = event.currentTarget.id.split("_")[1];
     }
 });
 

@@ -12,6 +12,10 @@
     width: 20%;
 }
 
+#logout { 
+    margin-top: 5px;
+}
+
 #services {
     background-color: #fafafa;
     height: 100%;
