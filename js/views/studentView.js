@@ -26,6 +26,11 @@ var StudentView = Backbone.View.extend({
                 }
             }
         });
+    },
+    events: { 
+        'click .editbtn-student': 'editReview', 
+        'click .cancel-edit': 'cancelEdit', 
+        'click .submit-edit': 'submitEdit'
     }, 
     loadReviews: function(){
         var reviews = document.getElementById("reviews"); 
@@ -91,7 +96,7 @@ var StudentView = Backbone.View.extend({
                         panel_footer.setAttribute("class", "panel-footer text-center"); 
                         panel_footer_p.setAttribute("class", "footer_string"); 
                         panel_footer_userlink.setAttribute("href", landlord_path); 
-                        if(isStudent) edit_button.setAttribute("class", "btn btn-primary editbtn col-lg-1");
+                        if(isStudent) edit_button.setAttribute("class", "btn btn-primary editbtn-student col-lg-1");
                         if(isStudent) edit_button.setAttribute("id", "edit_" + review._id);
                         panel.setAttribute("id", review._id);
 
@@ -124,6 +129,8 @@ var StudentView = Backbone.View.extend({
         var btn = event.currentTarget; 
         btn.style.display = "none";
         var reviewId = btn.id.split("_")[1];
+
+        console.log("student view pitches.");
 
         //get the elements to remove and replace with input fields
         var title = document.getElementById("title_" + reviewId); 
@@ -204,7 +211,7 @@ var StudentView = Backbone.View.extend({
                 }
                 else{
                     alert("Review Updated Successfully");
-                    that.loadReviews(that.landlord);
+                    that.loadReviews();
                 }
             }
         });
