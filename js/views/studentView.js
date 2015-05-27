@@ -29,8 +29,9 @@ var StudentView = Backbone.View.extend({
     },
     events: { 
         'click .editbtn-student': 'editReview', 
+        'click .deletebtn-student': 'deleteReview',
         'click .cancel-edit-student': 'cancelEdit', 
-        'click .submit-edit-student': 'submitEdit'
+        'click .submit-edit-student': 'submitEdit', 
     }, 
     loadReviews: function(){
         var reviews = document.getElementById("reviews"); 
@@ -77,6 +78,8 @@ var StudentView = Backbone.View.extend({
                         var panel_footer_userlink = document.createElement("A");
                         var edit_button; 
                         if(isStudent) edit_button = document.createElement("BUTTON"); 
+                        var delete_button;
+                        if(isStudent) delete_button = document.createElement("BUTTON");
 
                         var panel_title_text = document.createTextNode(review.title);
                         var panel_body_text = document.createTextNode(review.content);
@@ -85,19 +88,24 @@ var StudentView = Backbone.View.extend({
                         var panel_footer_post_text = document.createTextNode(" on " + new Date(review.date).toDateString());
                         var edit_button_text; 
                         if(isStudent) edit_button_text = document.createTextNode("Edit");
+                        var delete_button_text;
+                        if(isStudent) delete_button_text = document.createTextNode("Delete");
+
 
                         //add attributes
                         panel.setAttribute("class", "panel panel-default col-lg-8 col-lg-offset-2 text-left"); 
-                        panel_heading.setAttribute("class", "panel-heading col-lg-12"); 
-                        panel_title.setAttribute("class", "panel-title col-lg-10"); 
+                        panel_heading.setAttribute("class", "panel-heading row"); 
+                        panel_title.setAttribute("class", "panel-title col-lg-8"); 
                         panel_title.setAttribute("id", "title_" + review._id);
                         panel_body.setAttribute("class", "panel-body"); 
                         panel_body_p.setAttribute("id", "body_" + review._id);
                         panel_footer.setAttribute("class", "panel-footer text-center"); 
                         panel_footer_p.setAttribute("class", "footer_string"); 
                         panel_footer_userlink.setAttribute("href", landlord_path); 
-                        if(isStudent) edit_button.setAttribute("class", "btn btn-primary editbtn-student col-lg-1");
+                        if(isStudent) edit_button.setAttribute("class", "btn btn-primary editbtn-student col-lg-1 col-lg-offset-2");
                         if(isStudent) edit_button.setAttribute("id", "edit_" + review._id);
+                        if(isStudent) delete_button.setAttribute("class", "btn btn-danger deletebtn-student col-lg-1 ");
+                        if(isStudent) delete_button.setAttribute("id", "delete_" + review._id);
                         panel.setAttribute("id", review._id);
 
                         //add text nodes
@@ -108,10 +116,13 @@ var StudentView = Backbone.View.extend({
                         panel_footer_p.appendChild(panel_footer_userlink);
                         panel_footer_p.appendChild(panel_footer_post_text);
                         if(isStudent) edit_button.appendChild(edit_button_text);
+                        if(isStudent) delete_button.appendChild(delete_button_text);
 
                         //scale in children 
                         panel_heading.appendChild(panel_title); 
                         if(isStudent) panel_heading.appendChild(edit_button);
+                        if(isStudent) panel_heading.appendChild(delete_button);
+
                         panel_body.appendChild(panel_body_p);
                         panel_footer.appendChild(panel_footer_p);
                         panel.appendChild(panel_heading);
@@ -189,6 +200,21 @@ var StudentView = Backbone.View.extend({
         button_row.appendChild(submit_edit);
         bodyParent.appendChild(button_row);
     }, 
+    deleteReview: function(event){
+        //get reviewId
+        var reviewId = event.currentTarget.id.split("_")[1];
+        var that = this;
+        //send delete request
+        $.ajax({
+            url: "/reviews/" + reviewId,
+            type: "DELETE", 
+            success: function(body){
+                that.loadReviews();
+            }
+        });
+
+        //reload list
+    },
     submitEdit: function(event){
 
         var that = this;
