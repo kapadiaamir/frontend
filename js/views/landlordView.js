@@ -119,7 +119,8 @@ var LandlordView = Backbone.View.extend({
     }, 
     events: {
         'focus #review-content': 'clear', 
-        'click #submit-review': 'sendReview'
+        'click #submit-review': 'sendReview', 
+        'click .editbtn': 'editReview'
     }, 
     clear: function(event){
         if(!this.firstClick) event.currentTarget.value = "";
@@ -216,21 +217,28 @@ var LandlordView = Backbone.View.extend({
                         var panel_footer = document.createElement("DIV"); 
                         var panel_footer_p = document.createElement("P");
                         var panel_footer_userlink = document.createElement("A");
+                        var edit_button = document.createElement("BUTTON"); 
 
                         var panel_title_text = document.createTextNode(review.title);
                         var panel_body_text = document.createTextNode(review.content);
                         var panel_footer_pre_text = document.createTextNode("By: ");
                         var panel_footer_username_text = document.createTextNode(review.studentId); 
                         var panel_footer_post_text = document.createTextNode(" on " + new Date(review.date).toDateString());
+                        var edit_button_text = document.createTextNode("Edit");
 
                         //add attributes
                         panel.setAttribute("class", "panel panel-default col-lg-8 col-lg-offset-2 text-left"); 
-                        panel_heading.setAttribute("class", "panel-heading"); 
-                        panel_title.setAttribute("class", "panel-title"); 
+                        panel_heading.setAttribute("class", "panel-heading col-lg-12"); 
+                        panel_title.setAttribute("class", "panel-title col-lg-10"); 
+                        panel_title.setAttribute("id", "title_" + review._id);
                         panel_body.setAttribute("class", "panel-body"); 
+                        panel_body.setAttribute("id", "body_" + review._id);
                         panel_footer.setAttribute("class", "panel-footer text-center"); 
                         panel_footer_p.setAttribute("class", "footer_string"); 
                         panel_footer_userlink.setAttribute("href", student_path); 
+                        edit_button.setAttribute("class", "btn btn-primary editbtn col-lg-1");
+                        edit_button.setAttribute("id", "edit_" + review._id);
+                        panel.setAttribute("id", review._id);
 
                         //add text nodes
                         panel_title.appendChild(panel_title_text);
@@ -239,9 +247,11 @@ var LandlordView = Backbone.View.extend({
                         panel_footer_userlink.appendChild(panel_footer_username_text);
                         panel_footer_p.appendChild(panel_footer_userlink);
                         panel_footer_p.appendChild(panel_footer_post_text);
+                        edit_button.appendChild(edit_button_text);
 
                         //scale in children 
                         panel_heading.appendChild(panel_title); 
+                        panel_heading.appendChild(edit_button);
                         panel_footer.appendChild(panel_footer_p);
                         panel.appendChild(panel_heading);
                         panel.appendChild(panel_body); 
@@ -253,6 +263,22 @@ var LandlordView = Backbone.View.extend({
                 }
             }
         }); 
+    }, 
+    editReview: function(event){
+        //get the review Id to edit
+        var btn = event.currentTarget; 
+        var reviewId = btn.id.split("_")[1];
+
+        //get the elements to remove and replace with input fields
+        var title = document.getElementById("title_" + reviewId); 
+        var body  = document.getElementById("body_" + reviewId);
+
+        title.style.display = "none";
+        body.style.display = "none";
+
+
+
+
     }
 });
 
