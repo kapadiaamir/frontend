@@ -45,7 +45,7 @@ var LandlordView = Backbone.View.extend({
                             that.user = body.user; 
 
                             //enable a log out button
-                            document.getElementById("logout").style.display = "";
+                            document.getElementById("logout").style.display = "";  
 
                             if(that.user.type == "landlord"){ //logged in user is a landlord
                                 //write error message

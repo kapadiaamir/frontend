@@ -68,7 +68,7 @@
                             <a href="/#the-team">The Team</a>
                         </li>
                         <li>
-                            <p id="logout" class="btn btn-primary" style="display:none;">Log Out</p>
+                            <button id="logout" class="btn btn-primary" style="display:none;" onclick="logout()">Log Out</button>
                         </li>
                     </ul>
                 </div>
@@ -283,10 +283,7 @@
             <div id="landlord-list">
                 <% _.each(landlords, function(landlord){ %>
                     <div id=<%=landlord.username%> class="size-1-5">
-                        <% if (landlord.companyname) %>
-                            <a href=<%= "/landlords/" + landlord.username %>><%= landlord.companyname %> </a> 
-                        <% else %>
-                            <a href=<%= "/landlords/" + landlord.username %>><%=landlord.firstname + " " + landlord.lastname %></a>
+                        <a href=<%= "/landlords/" + landlord.username %>><%= landlord.companyname %> </a> 
                     </div>
                 <% }); %>
             </div>

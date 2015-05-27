@@ -12,6 +12,15 @@ var StudentView = Backbone.View.extend({
                 that.loadReviews();
             }
         }); 
+
+        $.ajax({
+            url: '/currentUser', 
+            type: 'GET', 
+            success: function(body){
+                that.user = body.user;
+                document.getElementById("logout").style.display = "";
+            }
+        });
     }, 
     loadReviews: function(){
         var reviews = document.getElementById("reviews"); 
