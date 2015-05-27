@@ -29,8 +29,8 @@ var StudentView = Backbone.View.extend({
     },
     events: { 
         'click .editbtn-student': 'editReview', 
-        'click .cancel-edit': 'cancelEdit', 
-        'click .submit-edit': 'submitEdit'
+        'click .cancel-edit-student': 'cancelEdit', 
+        'click .submit-edit-student': 'submitEdit'
     }, 
     loadReviews: function(){
         var reviews = document.getElementById("reviews"); 
@@ -173,8 +173,8 @@ var StudentView = Backbone.View.extend({
         input_row.setAttribute("class", "row"); 
         submit_edit.setAttribute("id", "submit-edit_" + reviewId);
         cancel_edit.setAttribute("id", "cancel-edit_" + reviewId);
-        submit_edit.setAttribute("class", "submit-edit btn btn-primary col-lg-2 col-lg-offset-1");
-        cancel_edit.setAttribute("class", "cancel-edit btn btn-danger col-lg-2 col-lg-offset-7");
+        submit_edit.setAttribute("class", "submit-edit-student btn btn-primary col-lg-2 col-lg-offset-1");
+        cancel_edit.setAttribute("class", "cancel-edit-student btn btn-danger col-lg-2 col-lg-offset-7");
 
         //button texts
         submit_edit.appendChild(submit_edit_text); 

@@ -370,6 +370,22 @@ var LandlordView = Backbone.View.extend({
     cancelEdit: function(event){
         //grab the review id 
         var reviewId = event.currentTarget.id.split("_")[1];
+        event.currentTarget.parentNode.removeChild(event.currentTarget);
+        document.getElementById("submit-edit_" + reviewId).parentNode.removeChild(document.getElementById("submit-edit_" + reviewId));
+
+        var editTitle = document.getElementById("edit-title_" + reviewId);
+        var editBody = document.getElementById("edit-body_" + reviewId);
+
+        editTitle.parentNode.removeChild(editTitle);
+        editBody.parentNode.removeChild(editBody);
+
+        document.getElementById("edit_" + reviewId).style.display = "";
+
+        document.getElementById("title_" + reviewId).style.display = ""; 
+        document.getElementById("body_" + reviewId).style.display = "";
+
+
+
     }
 });
 
