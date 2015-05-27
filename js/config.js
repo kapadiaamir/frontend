@@ -44,3 +44,14 @@ $.ajaxSetup({
     }
   }
 })
+
+var logout = function(){
+  $.ajax({
+    url: '/logout', 
+    type: 'GET',
+    success: function(body){
+      alert("Logged out successfully"); 
+      window.location.reload();
+    }
+  })
+}

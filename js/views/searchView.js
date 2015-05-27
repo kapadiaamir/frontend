@@ -39,6 +39,19 @@ var SearchView = Backbone.View.extend({
         //load template out
         var template = _.template($("#search-template").html());
         this.$el.html(template);
+
+        $.ajax({
+            url: '/currentUser', 
+            type: 'GET', 
+            success: function(body){
+                if(body.status){
+                    that.user = body.user; 
+
+                    //enable logout btn
+                    document.getElementById("logout").style.display = "";
+                }
+            }
+        });
     }, 
     events: {
         'search #q': 'search', 
@@ -54,9 +67,6 @@ var SearchView = Backbone.View.extend({
         if(type == "landlords") criteria = "companyname";
         else criteria = "username";
 
-        console.log(type);
-        console.log(users);
-
         for(user in users){
             console.log((users[user])[criteria]);
             if((users[user])[criteria] == event.currentTarget.value){
@@ -68,9 +78,6 @@ var SearchView = Backbone.View.extend({
 
         //couldn't find user 
         alert("Invalid Company or Username");
-
-
-
     }, 
     typeChange: function(event){
         //need to load new source  

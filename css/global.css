@@ -12,6 +12,10 @@
     width: 20%;
 }
 
+#logout { 
+    margin-top: 5px;
+}
+
 #services {
     background-color: #fafafa;
     height: 100%;
@@ -45,6 +49,9 @@
     font-size: 2.5em;
     border-top-right-radius: 25px;
     border-bottom-right-radius: 25px;
+}
+
+.editbtn { 
 }
 
 .scarlet { 

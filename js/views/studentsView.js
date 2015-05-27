@@ -11,6 +11,16 @@ var StudentList = Backbone.View.extend({
                 that.$el.html(template);
             }
         });
+
+        $.ajax({
+            url: '/currentUser', 
+            type: 'GET', 
+            success: function(body){
+                if(body.status){
+                    document.getElementById("logout").style.display = "";
+                }
+            }
+        });
     }
 }); 
 
