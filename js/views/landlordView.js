@@ -207,7 +207,6 @@ var LandlordView = Backbone.View.extend({
                     do_reviews.appendChild(p_message);
                 }
                 else{ //landlord has reviews
-                    console.log("have reviews");
                    //for each review, create a panel and appendChild it to reviews
                     for(index in body.reviews){
                         var review = body.reviews[index]; 
