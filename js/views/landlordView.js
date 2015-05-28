@@ -224,7 +224,7 @@ var LandlordView = Backbone.View.extend({
                         var panel_body = document.createElement("DIV"); 
                         var panel_body_p = document.createElement("P");
                         var panel_footer = document.createElement("DIV"); 
-                        var panel_footer_p = document.createElement("P");
+                        var panel_footer_p = document.createElement("SPAN");
                         var panel_footer_userlink = document.createElement("A");
                         var edit_button; 
                         if(isStudent) edit_button = document.createElement("BUTTON"); 
@@ -279,6 +279,88 @@ var LandlordView = Backbone.View.extend({
 
                         //add panel to reviews
                         do_reviews.appendChild(panel);
+
+                        //grab the appropriate comments for the review
+                        $.ajax({
+                            url: '/comments/' + review._id,
+                            type: 'GET',
+                            success: function(body){
+                                if(!body.status){ //there are no comments
+                                    var empty = document.createElement("P"); 
+                                    var emptyText = document.createTextNode("There are no comments for this review");
+
+                                    empty.setAttribute("class", "text text-center text-danger"); 
+
+                                    empty.appendChild(emptyText);
+
+                                    panel_body.appendChild(empty);
+                                }
+                                else { //there are comments
+                                    for(index in body.comments){
+                                        var comment = body.comments[index];
+
+                                        //grab reviewId
+                                        var reviewId = review._id; 
+
+                                        //check if valid edit user
+                                        var isValidUser = (that.user && (that.user.username == comment.authorId)); 
+                                        console.log(isValidUser);
+
+                                        //set up panel
+                                        var commentPanel = document.createElement("DIV"); 
+                                        commentPanel.setAttribute("id", "commentPanel_" + reviewId); 
+                                        commentPanel.setAttribute("class", "panel panel-default"); 
+
+                                        //set up panel body
+                                        var commentBody = document.createElement("DIV"); 
+                                        var commentBody_text = document.createTextNode(comment.content);
+                                        commentBody.setAttribute("class", "panel-body");
+                                        commentBody.appendChild(commentBody_text); 
+
+                                        //set up footer
+                                        var commentFooter = document.createElement("DIV"); 
+                                        var commentFooter_p = document.createElement("SPAN"); 
+                                        var commentFooter_a = document.createElement("A"); 
+                                        var commentFooter_p_preText = document.createTextNode("By: "); 
+                                        var commentFooter_p_postText = document.createTextNode(" on " + new Date(comment.date).toDateString());
+                                        var commentFooter_a_text = document.createTextNode(comment.authorId); 
+                                        var editComment; 
+                                        if(isValidUser) editComment = document.createElement("BUTTON"); 
+                                        var deleteComment; 
+                                        if(isValidUser) deleteComment = document.createElement("BUTTON");
+                                        var editButtonText = document.createTextNode("Edit"); 
+                                        var deleteButtonText = document.createTextNode("Delete");
+                                        
+                                        //attributes
+                                        commentFooter.setAttribute("class", "panel-footer");
+                                        commentFooter_p.setAttribute("class", "col-lg-8")
+                                        if(isValidUser) editComment.setAttribute("class", "btn btn-primary edit-comment  col-lg-offset-1"); 
+                                        if(isValidUser) editComment.setAttribute("id", "edit-comment_" + comment._id); 
+                                        if(isValidUser) deleteComment.setAttribute("class", "btn btn-danger delete-comment col-lg-offset-1"); 
+                                        if(isValidUser) deleteComment.setAttribute("id", "delete-comment_" + comment._id);
+
+                                        //compile footer
+                                        commentFooter_a.appendChild(commentFooter_a_text);
+                                        commentFooter_p.appendChild(commentFooter_p_preText);
+                                        commentFooter_p.appendChild(commentFooter_a);
+                                        commentFooter_p.appendChild(commentFooter_p_postText);
+                                        commentFooter.appendChild(commentFooter_p);
+                                        if(isValidUser) editComment.appendChild(editButtonText);
+                                        if(isValidUser) deleteComment.appendChild(deleteButtonText);
+                                        if(isValidUser) commentFooter.appendChild(editComment); 
+                                        if(isValidUser) commentFooter.appendChild(deleteComment);
+
+                                        //compile panel
+                                        commentPanel.appendChild(commentBody);
+                                        commentPanel.appendChild(commentFooter);
+
+                                        //add commentPanel to review body   
+                                        panel_body.appendChild(commentPanel);
+
+                                    }
+                                }
+                            }
+                        });
                     }
                 }
             }
