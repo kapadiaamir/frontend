@@ -84,7 +84,7 @@ var LandlordView = Backbone.View.extend({
                                 review_row.setAttribute("class", "row"); 
                                 review_title.setAttribute("class", "input input-text");
                                 review_content.setAttribute("class", "textbox review-content");
-                                review_content.setAttribute("firstClick", "false");
+                                review_content.setAttribute("data-firstClick", "false");
                                 review_button.setAttribute("class", "btn btn-primary size-1-5");
                                 button_row.setAttribute("class", "row"); 
 
@@ -131,9 +131,10 @@ var LandlordView = Backbone.View.extend({
         'click .submit-editedComment': 'submitEditedComment'
     }, 
     clear: function(event){
-        console.log(event.currentTarget['firstClick']);
-        if(event.currentTarget.firstClick == "false") event.currentTarget.value = "";
-        event.currentTarget.firstClick = true; 
+        if(event.currentTarget.getAttribute("data-firstClick") == "false"){ 
+            event.currentTarget.value = "";
+        }
+        event.currentTarget.setAttribute("data-firstClick", "true"); 
     }, 
     sendReview: function(event){
 
@@ -346,7 +347,6 @@ var LandlordView = Backbone.View.extend({
 
                                         //check if valid edit user
                                         var isValidUser = (that.user && (that.user.username == comment.authorId)); 
-                                        console.log(isValidUser);
 
                                         //set up panel
                                         var commentPanel = document.createElement("DIV"); 
@@ -411,6 +411,7 @@ var LandlordView = Backbone.View.extend({
                             var addCommentButtonText = document.createTextNode("Add Comment");
                             var newCommentText = document.createTextNode("Your comment here...");
                             newComment.setAttribute("class", "textbox review-content"); 
+                            newComment.setAttribute("data-firstClick", "false");
                             newComment.setAttribute("cols", "75"); 
                             newComment.setAttribute("rows", "5");
                             newComment.setAttribute("id", 'new-comment-content_' + review._id);
