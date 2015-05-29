@@ -6,9 +6,6 @@ var LandlordView = Backbone.View.extend({
         that.landlord.fetch({
             success: function(landlord){
                 that.landlord = landlord.attributes.landlord;
-
-                //console.log(that.landlord);
-                that.firstClick = false; 
  
                 var template = _.template($("#landlord-profile").html())({'landlord': that.landlord});
                 that.$el.html(template);
@@ -86,9 +83,11 @@ var LandlordView = Backbone.View.extend({
                                 //add classes
                                 review_row.setAttribute("class", "row"); 
                                 review_title.setAttribute("class", "input input-text");
-                                review_content.setAttribute("class", "review-content");
+                                review_content.setAttribute("class", "textbox review-content");
+                                review_content.setAttribute("data-firstClick", "false");
                                 review_button.setAttribute("class", "btn btn-primary size-1-5");
                                 button_row.setAttribute("class", "row"); 
+
 
                                 //set various attributes for title and content
                                 review_title.setAttribute("type", "text");
@@ -120,15 +119,23 @@ var LandlordView = Backbone.View.extend({
         });
     }, 
     events: {
-        'focus #review-content': 'clear', 
-        'click #submit-review': 'sendReview', 
-        'click .editbtn': 'editReview', 
-        'click .cancel-edit': 'cancelEdit', 
-        'click .submit-edit': 'submitEdit'
+        'focus .textbox': 'clear', //clear a textbox on its first click
+        'click #submit-review': 'sendReview', //add review
+        'click .deletebtn': 'deleteReview', //delet review 
+        'click .add-comment-btn': 'addComment', //add comment
+        'click .editbtn': 'editReview',  //edit a review
+        'click .cancel-edit': 'cancelEdit', //cancel review edit
+        'click .submit-edit': 'submitEdit',  //submit review edit
+        'click .edit-comment': 'editComment',  //edit a comment 
+        'click .delete-comment': 'deleteComment', //delete a comment 
+        'click .submit-editComment': 'submitEditComment', //submit a comment edit
+        'click .cancel-editComment': 'cancelEditComment' //cancel a comment edit
     }, 
     clear: function(event){
-        if(!this.firstClick) event.currentTarget.value = "";
-        this.firstClick = true;
+        if(event.currentTarget.getAttribute("data-firstClick") == "false"){ 
+            event.currentTarget.value = "";
+        }
+        event.currentTarget.setAttribute("data-firstClick", "true"); 
     }, 
     sendReview: function(event){
 
@@ -177,6 +184,47 @@ var LandlordView = Backbone.View.extend({
         //refresh reviews from server
         this.loadReviews(this.landlord);
     },
+    deleteReview: function(event){
+        var that = this; 
+        //get review id 
+        var reviewId = event.currentTarget.id.split("_")[1];
+
+        //send the delete request
+        $.ajax({
+            url: '/reviews/' + reviewId, 
+            type: "DELETE", 
+            success: function(body){
+                if(body.status){
+                    alert("Your review has been deleted successfully");
+                    that.loadReviews(that.landlord);
+                }
+            }
+        });
+    },
+    addComment: function(event){
+        var that = this; 
+
+        //grab the review id
+        var reviewId = event.currentTarget.id.split("_")[1];
+
+        //grab the content
+        var comment = {}; 
+        comment.content = document.getElementById("new-comment-content_" + reviewId).value;
+
+        //send the ajax request
+        $.ajax({
+            url: '/comments/' + reviewId, 
+            type: "POST", 
+            dataType: "json", 
+            data: comment, 
+            success: function(body){
+                if(body.status){
+                    alert("The comment has been added successfully. ");
+                    that.loadReviews(that.landlord); 
+                }
+            }
+        });
+    },
     loadReviews: function(landlord){
         //load reviews for landlord
         var reviewPath = "/landlords/" + landlord.username + "/reviews";
@@ -224,10 +272,12 @@ var LandlordView = Backbone.View.extend({
                         var panel_body = document.createElement("DIV"); 
                         var panel_body_p = document.createElement("P");
                         var panel_footer = document.createElement("DIV"); 
-                        var panel_footer_p = document.createElement("P");
+                        var panel_footer_p = document.createElement("SPAN");
                         var panel_footer_userlink = document.createElement("A");
                         var edit_button; 
                         if(isStudent) edit_button = document.createElement("BUTTON"); 
+                        var delete_button; 
+                        if(isStudent) delete_button = document.createElement("BUTTON");
 
                         var panel_title_text = document.createTextNode(review.title);
                         var panel_body_text = document.createTextNode(review.content);
@@ -236,19 +286,23 @@ var LandlordView = Backbone.View.extend({
                         var panel_footer_post_text = document.createTextNode(" on " + new Date(review.date).toDateString());
                         var edit_button_text; 
                         if(isStudent) edit_button_text = document.createTextNode("Edit");
+                        var delete_button_text; 
+                        if(isStudent) delete_button_text = document.createTextNode("Delete");
 
                         //add attributes
                         panel.setAttribute("class", "panel panel-default col-lg-8 col-lg-offset-2 text-left"); 
-                        panel_heading.setAttribute("class", "panel-heading col-lg-12"); 
-                        panel_title.setAttribute("class", "panel-title col-lg-10"); 
+                        panel_heading.setAttribute("class", "panel-heading row"); 
+                        panel_title.setAttribute("class", "panel-title col-lg-8"); 
                         panel_title.setAttribute("id", "title_" + review._id);
                         panel_body.setAttribute("class", "panel-body"); 
                         panel_body_p.setAttribute("id", "body_" + review._id);
                         panel_footer.setAttribute("class", "panel-footer text-center"); 
                         panel_footer_p.setAttribute("class", "footer_string"); 
                         panel_footer_userlink.setAttribute("href", student_path); 
-                        if(isStudent) edit_button.setAttribute("class", "btn btn-primary editbtn col-lg-1");
+                        if(isStudent) edit_button.setAttribute("class", "btn btn-primary editbtn col-lg-1 col-lg-offset-2");
                         if(isStudent) edit_button.setAttribute("id", "edit_" + review._id);
+                        if(isStudent) delete_button.setAttribute("class", "btn btn-danger deletebtn col-lg-1"); 
+                        if(isStudent) delete_button.setAttribute("id", "delete_" + review._id);
                         panel.setAttribute("id", review._id);
 
                         //add text nodes
@@ -259,15 +313,123 @@ var LandlordView = Backbone.View.extend({
                         panel_footer_p.appendChild(panel_footer_userlink);
                         panel_footer_p.appendChild(panel_footer_post_text);
                         if(isStudent) edit_button.appendChild(edit_button_text);
+                        if(isStudent) delete_button.appendChild(delete_button_text);
 
                         //scale in children 
                         panel_heading.appendChild(panel_title); 
                         if(isStudent) panel_heading.appendChild(edit_button);
+                        if(isStudent) panel_heading.appendChild(delete_button);
                         panel_body.appendChild(panel_body_p);
-                        panel_footer.appendChild(panel_footer_p);
+                        panel_heading.appendChild(panel_footer_p);
                         panel.appendChild(panel_heading);
                         panel.appendChild(panel_body); 
-                        panel.appendChild(panel_footer);
+
+                        //grab the appropriate comments for the review
+                        $.ajax({
+                            url: '/comments/' + review._id,
+                            type: 'GET',
+                            success: function(body){
+                                if(!body.status){ //there are no comments
+                                    var empty = document.createElement("P"); 
+                                    var emptyText = document.createTextNode("There are no comments for this review");
+
+                                    empty.setAttribute("class", "text text-center text-danger"); 
+
+                                    empty.appendChild(emptyText);
+
+                                    panel_body.appendChild(empty);
+                                }
+                                else { //there are comments
+                                    for(index in body.comments){
+                                        var comment = body.comments[index];
+
+                                        //grab reviewId
+                                        var reviewId = review._id; 
+
+                                        //check if valid edit user
+                                        var isValidUser = (that.user && (that.user.username == comment.authorId)); 
+
+                                        //set up panel
+                                        var commentPanel = document.createElement("DIV"); 
+                                        commentPanel.setAttribute("id", "commentPanel_" + comment._id); 
+                                        commentPanel.setAttribute("class", "panel panel-default"); 
+
+                                        //set up panel body
+                                        var commentBody = document.createElement("DIV"); 
+                                        var commentBody_p  = document.createElement("P");
+                                        var commentBody_p_text = document.createTextNode(comment.content);
+                                        commentBody.setAttribute("class", "panel-body");
+                                        commentBody_p.setAttribute("id", "comment-p_" + comment._id);
+                                        commentBody_p.appendChild(commentBody_p_text); 
+                                        commentBody.appendChild(commentBody_p);
+
+                                        //set up footer
+                                        commentBody.setAttribute("id", "comment-body_" + comment._id);
+                                        var commentFooter = document.createElement("DIV"); 
+                                        var commentFooter_p = document.createElement("SPAN"); 
+                                        var commentFooter_a = document.createElement("A"); 
+                                        var commentFooter_p_preText = document.createTextNode("By: "); 
+                                        var commentFooter_p_postText = document.createTextNode(" on " + new Date(comment.date).toDateString());
+                                        var commentFooter_a_text = document.createTextNode(comment.authorId); 
+                                        var editComment; 
+                                        if(isValidUser) editComment = document.createElement("BUTTON"); 
+                                        var deleteComment; 
+                                        if(isValidUser) deleteComment = document.createElement("BUTTON");
+                                        var editButtonText = document.createTextNode("Edit"); 
+                                        var deleteButtonText = document.createTextNode("Delete");
+                                        
+                                        //attributes
+                                        commentFooter_a.setAttribute("href", "/" + comment.authorType + "s/" + comment.authorId); 
+                                        commentFooter.setAttribute("class", "panel-footer");
+                                        if(isValidUser) commentFooter_p.setAttribute("class", "col-lg-8")
+                                        if(isValidUser) editComment.setAttribute("class", "btn btn-primary edit-comment  col-lg-offset-1"); 
+                                        if(isValidUser) editComment.setAttribute("id", "edit-comment_" + comment._id); 
+                                        if(isValidUser) deleteComment.setAttribute("class", "btn btn-danger delete-comment col-lg-offset-1"); 
+                                        if(isValidUser) deleteComment.setAttribute("id", "delete-comment_" + comment._id);
+
+                                        //compile footer
+                                        commentFooter_a.appendChild(commentFooter_a_text);
+                                        commentFooter_p.appendChild(commentFooter_p_preText);
+                                        commentFooter_p.appendChild(commentFooter_a);
+                                        commentFooter_p.appendChild(commentFooter_p_postText);
+                                        commentFooter.appendChild(commentFooter_p);
+                                        if(isValidUser) editComment.appendChild(editButtonText);
+                                        if(isValidUser) deleteComment.appendChild(deleteButtonText);
+                                        if(isValidUser) commentFooter.appendChild(editComment); 
+                                        if(isValidUser) commentFooter.appendChild(deleteComment);
+
+                                        //compile panel
+                                        commentPanel.appendChild(commentBody);
+                                        commentPanel.appendChild(commentFooter);
+
+                                        //add commentPanel to review body   
+                                        document.getElementById("body_" + comment.reviewId).appendChild(commentPanel);
+
+                                    }
+                                }
+                            }
+                        });
+                        
+                        if(that.user){
+                            //append on a box for any new comments
+                            var newComment = document.createElement("TEXTAREA"); 
+                            var addCommentButton = document.createElement("BUTTON"); 
+                            var addCommentButtonText = document.createTextNode("Add Comment");
+                            var newCommentText = document.createTextNode("Your comment here...");
+                            newComment.setAttribute("class", "textbox review-content"); 
+                            newComment.setAttribute("data-firstClick", "false");
+                            newComment.setAttribute("cols", "75"); 
+                            newComment.setAttribute("rows", "5");
+                            newComment.setAttribute("id", 'new-comment-content_' + review._id);
+                            addCommentButton.setAttribute("class", "btn btn-primary add-comment-btn col-lg-offset-10");
+                            addCommentButton.setAttribute("id", "add-comment-btn_" + review._id);
+                            newComment.appendChild(newCommentText); 
+                            addCommentButton.appendChild(addCommentButtonText);
+
+                            panel_body.appendChild(newComment); 
+                            panel_body.appendChild(addCommentButton);
+
+                        }
 
                         //add panel to reviews
                         do_reviews.appendChild(panel);
@@ -383,8 +545,102 @@ var LandlordView = Backbone.View.extend({
 
         document.getElementById("title_" + reviewId).style.display = ""; 
         document.getElementById("body_" + reviewId).style.display = "";
+    }, 
+    editComment: function(event){
+        //replace the comment content with a textarea
+        var commentId = event.currentTarget.id.split("_")[1];
 
+        //clear the innerHTML, replace it with a text area and a submit/cancel edit button
+        var message = document.getElementById("comment-p_" + commentId); 
+        var parent = message.parentNode;
+        var oldComment = message.innerHTML; 
+        message.style.display = "none";
 
+        //textarea
+        var newCommentContent = document.createElement("TEXTAREA"); 
+        var oldText = document.createTextNode(oldComment);
+        
+        //set attributes 
+        newCommentContent.setAttribute("class", "review-content textbox"); 
+        newCommentContent.setAttribute("cols", "70"); 
+        newCommentContent.setAttribute("rows", "5");
+        newCommentContent.setAttribute("id", "editedComment_" + commentId); 
+
+        //add the old text to the edit box
+        newCommentContent.appendChild(oldText);
+
+        //submit and cancel buttons
+        var submitCommentEdit = document.createElement("BUTTON"); 
+        var cancelCommentEdit = document.createElement("BUTTON");
+        var submitText = document.createTextNode("Submit"); 
+        var cancelText = document.createTextNode("Cancel"); 
+
+        //append text
+        submitCommentEdit.appendChild(submitText); 
+        cancelCommentEdit.appendChild(cancelText);
+
+        //set Attributes
+        submitCommentEdit.setAttribute("class", "btn btn-primary submit-editComment col-lg-offset-10"); 
+        submitCommentEdit.setAttribute("id", "submit-editComment_" + commentId);
+        cancelCommentEdit.setAttribute("class", "btn btn-danger cancel-editComment"); 
+        cancelCommentEdit.setAttribute("id", "cancel-editComment_" + commentId);
+
+        //append to the body
+        parent.appendChild(newCommentContent);
+        parent.appendChild(submitCommentEdit);
+        parent.appendChild(cancelCommentEdit);
+    },
+    deleteComment: function(event){
+
+        var that  = this;
+        //get the comment ID
+        var commentId = event.currentTarget.id.split("_")[1];
+
+        //send a request to delete the comment
+        $.ajax({
+            url: '/comments/' + commentId, 
+            type: 'DELETE', 
+            success: function(body){
+                if(body.status){
+                    alert("Your comment has been succcessfully deleted"); 
+                    that.loadReviews(that.landlord);
+                }
+            }
+        })
+    }, 
+    submitEditComment: function(event){
+        var that = this; 
+        //get the comment id 
+        var commentId = event.currentTarget.id.split("_")[1];
+
+        //get the new content
+        var comment = {}; 
+        comment.content = document.getElementById("editedComment_" + commentId).value;
+
+        $.ajax({
+            url: "/comments/" + commentId, 
+            type: "PUT",
+            dataType: "json", 
+            data: comment, 
+            success: function(body){
+                if(body.status){
+                    alert("Comment updated successfully");
+                    that.loadReviews(that.landlord);
+                }
+            }
+        });
+    }, 
+    cancelEditComment: function(event){
+        var commentId = event.currentTarget.id.split("_")[1];
+
+        //remove the text box 
+        var daddy = document.getElementById("editedComment_" + commentId).parentNode;
+        daddy.removeChild(document.getElementById("editedComment_" + commentId));
+        daddy.removeChild(document.getElementById("submit-editComment_" + commentId)); 
+        daddy.removeChild(document.getElementById("cancel-editComment_" + commentId));
+
+        //reshow the old one 
+        document.getElementById("comment-p_" + commentId).style.display = "";
 
     }
 });

@@ -50,8 +50,8 @@ var logout = function(){
     url: '/logout', 
     type: 'GET',
     success: function(body){
-      alert("Logged out successfully"); 
       window.location.reload();
+      alert("Logged out successfully"); 
     }
   })
 }
