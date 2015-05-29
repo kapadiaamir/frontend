@@ -212,8 +212,6 @@ var StudentView = Backbone.View.extend({
                 that.loadReviews();
             }
         });
-
-        //reload list
     },
     submitEdit: function(event){
 

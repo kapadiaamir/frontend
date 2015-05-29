@@ -6,9 +6,6 @@ var LandlordView = Backbone.View.extend({
         that.landlord.fetch({
             success: function(landlord){
                 that.landlord = landlord.attributes.landlord;
-
-                //console.log(that.landlord);
-                that.firstClick = false; 
  
                 var template = _.template($("#landlord-profile").html())({'landlord': that.landlord});
                 that.$el.html(template);
@@ -86,9 +83,11 @@ var LandlordView = Backbone.View.extend({
                                 //add classes
                                 review_row.setAttribute("class", "row"); 
                                 review_title.setAttribute("class", "input input-text");
-                                review_content.setAttribute("class", "review-content");
+                                review_content.setAttribute("class", "textbox review-content");
+                                review_content.setAttribute("firstClick", "false");
                                 review_button.setAttribute("class", "btn btn-primary size-1-5");
                                 button_row.setAttribute("class", "row"); 
+
 
                                 //set various attributes for title and content
                                 review_title.setAttribute("type", "text");
@@ -120,15 +119,21 @@ var LandlordView = Backbone.View.extend({
         });
     }, 
     events: {
-        'focus #review-content': 'clear', 
-        'click #submit-review': 'sendReview', 
+        'focus .textbox': 'clear',
+        'click #submit-review': 'sendReview',
+        'click .deletebtn': 'deleteReview',
+        'click .add-comment-btn': 'addComment',
         'click .editbtn': 'editReview', 
         'click .cancel-edit': 'cancelEdit', 
-        'click .submit-edit': 'submitEdit'
+        'click .submit-edit': 'submitEdit', 
+        'click .edit-comment': 'editComment', 
+        'click .delete-comment': 'deleteComment', 
+        'click .submit-editedComment': 'submitEditedComment'
     }, 
     clear: function(event){
-        if(!this.firstClick) event.currentTarget.value = "";
-        this.firstClick = true;
+        console.log(event.currentTarget['firstClick']);
+        if(event.currentTarget.firstClick == "false") event.currentTarget.value = "";
+        event.currentTarget.firstClick = true; 
     }, 
     sendReview: function(event){
 
@@ -176,6 +181,47 @@ var LandlordView = Backbone.View.extend({
 
         //refresh reviews from server
         this.loadReviews(this.landlord);
+    },
+    deleteReview: function(event){
+        var that = this; 
+        //get review id 
+        var reviewId = event.currentTarget.id.split("_")[1];
+
+        //send the delete request
+        $.ajax({
+            url: '/reviews/' + reviewId, 
+            type: "DELETE", 
+            success: function(body){
+                if(body.status){
+                    alert("Your review has been deleted successfully");
+                    that.loadReviews(that.landlord);
+                }
+            }
+        });
+    },
+    addComment: function(event){
+        var that = this; 
+
+        //grab the review id
+        var reviewId = event.currentTarget.id.split("_")[1];
+
+        //grab the content
+        var comment = {}; 
+        comment.content = document.getElementById("new-comment-content_" + reviewId).value;
+
+        //send the ajax request
+        $.ajax({
+            url: '/comments/' + reviewId, 
+            type: "POST", 
+            dataType: "json", 
+            data: comment, 
+            success: function(body){
+                if(body.status){
+                    alert("The comment has been added successfully. ");
+                    that.loadReviews(that.landlord); 
+                }
+            }
+        });
     },
     loadReviews: function(landlord){
         //load reviews for landlord
@@ -272,13 +318,9 @@ var LandlordView = Backbone.View.extend({
                         if(isStudent) panel_heading.appendChild(edit_button);
                         if(isStudent) panel_heading.appendChild(delete_button);
                         panel_body.appendChild(panel_body_p);
-                        panel_footer.appendChild(panel_footer_p);
+                        panel_heading.appendChild(panel_footer_p);
                         panel.appendChild(panel_heading);
                         panel.appendChild(panel_body); 
-                        panel.appendChild(panel_footer);
-
-                        //add panel to reviews
-                        do_reviews.appendChild(panel);
 
                         //grab the appropriate comments for the review
                         $.ajax({
@@ -333,7 +375,7 @@ var LandlordView = Backbone.View.extend({
                                         
                                         //attributes
                                         commentFooter.setAttribute("class", "panel-footer");
-                                        commentFooter_p.setAttribute("class", "col-lg-8")
+                                        if(isValidUser) commentFooter_p.setAttribute("class", "col-lg-8")
                                         if(isValidUser) editComment.setAttribute("class", "btn btn-primary edit-comment  col-lg-offset-1"); 
                                         if(isValidUser) editComment.setAttribute("id", "edit-comment_" + comment._id); 
                                         if(isValidUser) deleteComment.setAttribute("class", "btn btn-danger delete-comment col-lg-offset-1"); 
@@ -355,12 +397,35 @@ var LandlordView = Backbone.View.extend({
                                         commentPanel.appendChild(commentFooter);
 
                                         //add commentPanel to review body   
-                                        panel_body.appendChild(commentPanel);
+                                        document.getElementById("body_" + comment.reviewId).appendChild(commentPanel);
 
                                     }
                                 }
                             }
                         });
+                        
+                        if(that.user){
+                            //append on a box for any new comments
+                            var newComment = document.createElement("TEXTAREA"); 
+                            var addCommentButton = document.createElement("BUTTON"); 
+                            var addCommentButtonText = document.createTextNode("Add Comment");
+                            var newCommentText = document.createTextNode("Your comment here...");
+                            newComment.setAttribute("class", "textbox review-content"); 
+                            newComment.setAttribute("cols", "75"); 
+                            newComment.setAttribute("rows", "5");
+                            newComment.setAttribute("id", 'new-comment-content_' + review._id);
+                            addCommentButton.setAttribute("class", "btn btn-primary add-comment-btn col-lg-offset-10");
+                            addCommentButton.setAttribute("id", "add-comment-btn_" + review._id);
+                            newComment.appendChild(newCommentText); 
+                            addCommentButton.appendChild(addCommentButtonText);
+
+                            panel_body.appendChild(newComment); 
+                            panel_body.appendChild(addCommentButton);
+
+                        }
+
+                        //add panel to reviews
+                        do_reviews.appendChild(panel);
                     }
                 }
             }
@@ -473,9 +538,32 @@ var LandlordView = Backbone.View.extend({
 
         document.getElementById("title_" + reviewId).style.display = ""; 
         document.getElementById("body_" + reviewId).style.display = "";
+    }, 
+    editComment: function(event){
+        //replace the comment content with a textarea
+    },
+    deleteComment: function(event){
 
+        var that  = this;
+        //get the comment ID
+        var commentId = event.currentTarget.id.split("_")[1];
 
-
+        //send a request to delete the comment
+        $.ajax({
+            url: '/comments/' + commentId, 
+            type: 'DELETE', 
+            success: function(body){
+                if(body.status){
+                    alert("Your comment has been succcessfully deleted"); 
+                    that.loadReviews(that.landlord);
+                }
+            }
+        })
+    }, 
+    submitEditedComment: function(event){
+        var that = this; 
+        //get the comment id 
+        var commentId = event.currentTarget.id.split("_")[1];
     }
 });
 
