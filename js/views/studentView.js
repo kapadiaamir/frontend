@@ -28,10 +28,15 @@ var StudentView = Backbone.View.extend({
         });
     },
     events: { 
-        'click .editbtn-student': 'editReview', 
+        'click .editbtn-student': 'editReview',  
         'click .deletebtn-student': 'deleteReview',
         'click .cancel-edit-student': 'cancelEdit', 
         'click .submit-edit-student': 'submitEdit', 
+        'click .add-comment-student-btn': 'addComment', //add comment
+        'click .edit-comment-student': 'editComment',  //edit a comment 
+        'click .delete-comment-student': 'deleteComment', //delete a comment 
+        'click .submit-editComment-student': 'submitEditComment', //submit a comment edit
+        'click .cancel-editComment-student': 'cancelEditComment' //cancel a comment edit
     }, 
     loadReviews: function(){
         var reviews = document.getElementById("reviews"); 
@@ -124,10 +129,115 @@ var StudentView = Backbone.View.extend({
                         if(isStudent) panel_heading.appendChild(delete_button);
 
                         panel_body.appendChild(panel_body_p);
-                        panel_footer.appendChild(panel_footer_p);
+                        panel_heading.appendChild(panel_footer_p);
                         panel.appendChild(panel_heading);
                         panel.appendChild(panel_body); 
-                        panel.appendChild(panel_footer);
+
+                       //grab the appropriate comments for the review
+                        $.ajax({
+                            url: '/comments/' + review._id,
+                            type: 'GET',
+                            success: function(body){
+                                if(!body.status){ //there are no comments
+                                    var empty = document.createElement("P"); 
+                                    var emptyText = document.createTextNode("There are no comments for this review");
+
+                                    empty.setAttribute("class", "text text-center text-danger"); 
+
+                                    empty.appendChild(emptyText);
+
+                                    panel_body.appendChild(empty);
+                                }
+                                else { //there are comments
+                                    for(index in body.comments){
+                                        var comment = body.comments[index];
+
+                                        //grab reviewId
+                                        var reviewId = review._id; 
+
+                                        //check if valid edit user
+                                        var isValidUser = (that.user && (that.user.username == comment.authorId)); 
+
+                                        //set up panel
+                                        var commentPanel = document.createElement("DIV"); 
+                                        commentPanel.setAttribute("id", "commentPanel_" + comment._id); 
+                                        commentPanel.setAttribute("class", "panel panel-default"); 
+
+                                        //set up panel body
+                                        var commentBody = document.createElement("DIV"); 
+                                        var commentBody_p  = document.createElement("P");
+                                        var commentBody_p_text = document.createTextNode(comment.content);
+                                        commentBody.setAttribute("class", "panel-body");
+                                        commentBody_p.setAttribute("id", "comment-p_" + comment._id);
+                                        commentBody_p.appendChild(commentBody_p_text); 
+                                        commentBody.appendChild(commentBody_p);
+
+                                        //set up footer
+                                        commentBody.setAttribute("id", "comment-body_" + comment._id);
+                                        var commentFooter = document.createElement("DIV"); 
+                                        var commentFooter_p = document.createElement("SPAN"); 
+                                        var commentFooter_a = document.createElement("A"); 
+                                        var commentFooter_p_preText = document.createTextNode("By: "); 
+                                        var commentFooter_p_postText = document.createTextNode(" on " + new Date(comment.date).toDateString());
+                                        var commentFooter_a_text = document.createTextNode(comment.authorId); 
+                                        var editComment; 
+                                        if(isValidUser) editComment = document.createElement("BUTTON"); 
+                                        var deleteComment; 
+                                        if(isValidUser) deleteComment = document.createElement("BUTTON");
+                                        var editButtonText = document.createTextNode("Edit"); 
+                                        var deleteButtonText = document.createTextNode("Delete");
+                                        
+                                        //attributes
+                                        commentFooter.setAttribute("class", "panel-footer");
+                                        if(isValidUser) commentFooter_p.setAttribute("class", "col-lg-8")
+                                        if(isValidUser) editComment.setAttribute("class", "btn btn-primary edit-comment-student  col-lg-offset-1"); 
+                                        if(isValidUser) editComment.setAttribute("id", "edit-comment-student_" + comment._id); 
+                                        if(isValidUser) deleteComment.setAttribute("class", "btn btn-danger delete-comment-student col-lg-offset-1"); 
+                                        if(isValidUser) deleteComment.setAttribute("id", "delete-comment-student_" + comment._id);
+
+                                        //compile footer
+                                        commentFooter_a.appendChild(commentFooter_a_text);
+                                        commentFooter_p.appendChild(commentFooter_p_preText);
+                                        commentFooter_p.appendChild(commentFooter_a);
+                                        commentFooter_p.appendChild(commentFooter_p_postText);
+                                        commentFooter.appendChild(commentFooter_p);
+                                        if(isValidUser) editComment.appendChild(editButtonText);
+                                        if(isValidUser) deleteComment.appendChild(deleteButtonText);
+                                        if(isValidUser) commentFooter.appendChild(editComment); 
+                                        if(isValidUser) commentFooter.appendChild(deleteComment);
+
+                                        //compile panel
+                                        commentPanel.appendChild(commentBody);
+                                        commentPanel.appendChild(commentFooter);
+
+                                        //add commentPanel to review body   
+                                        document.getElementById("body_" + comment.reviewId).appendChild(commentPanel);
+
+                                    }
+                                }
+                            }
+                        });
+                        
+                        if(that.user){
+                            //append on a box for any new comments
+                            var newComment = document.createElement("TEXTAREA"); 
+                            var addCommentButton = document.createElement("BUTTON"); 
+                            var addCommentButtonText = document.createTextNode("Add Comment");
+                            var newCommentText = document.createTextNode("Your comment here...");
+                            newComment.setAttribute("class", "textbox review-content"); 
+                            newComment.setAttribute("data-firstClick", "false");
+                            newComment.setAttribute("cols", "75"); 
+                            newComment.setAttribute("rows", "5");
+                            newComment.setAttribute("id", 'new-comment-content_' + review._id);
+                            addCommentButton.setAttribute("class", "btn btn-primary add-comment-student-btn col-lg-offset-10");
+                            addCommentButton.setAttribute("id", "add-comment-student-btn_" + review._id);
+                            newComment.appendChild(newCommentText); 
+                            addCommentButton.appendChild(addCommentButtonText);
+
+                            panel_body.appendChild(newComment); 
+                            panel_body.appendChild(addCommentButton);
+
+                        }
 
                         reviews.appendChild(panel);
                     }
@@ -140,8 +250,6 @@ var StudentView = Backbone.View.extend({
         var btn = event.currentTarget; 
         btn.style.display = "none";
         var reviewId = btn.id.split("_")[1];
-
-        console.log("student view pitches.");
 
         //get the elements to remove and replace with input fields
         var title = document.getElementById("title_" + reviewId); 
@@ -257,9 +365,126 @@ var StudentView = Backbone.View.extend({
 
         document.getElementById("title_" + reviewId).style.display = ""; 
         document.getElementById("body_" + reviewId).style.display = "";
+    }, 
+    editComment: function(event){
+        //replace the comment content with a textarea
+        var commentId = event.currentTarget.id.split("_")[1];
 
+        //clear the innerHTML, replace it with a text area and a submit/cancel edit button
+        var message = document.getElementById("comment-p_" + commentId); 
+        var parent = message.parentNode;
+        var oldComment = message.innerHTML; 
+        message.style.display = "none";
 
+        //textarea
+        var newCommentContent = document.createElement("TEXTAREA"); 
+        var oldText = document.createTextNode(oldComment);
+        
+        //set attributes 
+        newCommentContent.setAttribute("class", "review-content textbox"); 
+        newCommentContent.setAttribute("cols", "70"); 
+        newCommentContent.setAttribute("rows", "5");
+        newCommentContent.setAttribute("id", "editedComment_" + commentId); 
 
+        //add the old text to the edit box
+        newCommentContent.appendChild(oldText);
+
+        //submit and cancel buttons
+        var submitCommentEdit = document.createElement("BUTTON"); 
+        var cancelCommentEdit = document.createElement("BUTTON");
+        var submitText = document.createTextNode("Submit"); 
+        var cancelText = document.createTextNode("Cancel"); 
+
+        //append text
+        submitCommentEdit.appendChild(submitText); 
+        cancelCommentEdit.appendChild(cancelText);
+
+        //set Attributes
+        submitCommentEdit.setAttribute("class", "btn btn-primary submit-editComment-student col-lg-offset-10"); 
+        submitCommentEdit.setAttribute("id", "submit-editComment-student_" + commentId);
+        cancelCommentEdit.setAttribute("class", "btn btn-danger cancel-editComment-student "); 
+        cancelCommentEdit.setAttribute("id", "cancel-editComment-student_" + commentId);
+
+        //append to the body
+        parent.appendChild(newCommentContent);
+        parent.appendChild(submitCommentEdit);
+        parent.appendChild(cancelCommentEdit);
+    },
+    deleteComment: function(event){
+
+        var that  = this;
+        //get the comment ID
+        var commentId = event.currentTarget.id.split("_")[1];
+
+        //send a request to delete the comment
+        $.ajax({
+            url: '/comments/' + commentId, 
+            type: 'DELETE', 
+            success: function(body){
+                if(body.status){
+                    alert("Your comment has been succcessfully deleted"); 
+                    that.loadReviews();
+                }
+            }
+        })
+    }, 
+    addComment: function(event){
+        var that = this; 
+
+        //grab the review id
+        var reviewId = event.currentTarget.id.split("_")[1];
+
+        //grab the content
+        var comment = {}; 
+        comment.content = document.getElementById("new-comment-content_" + reviewId).value;
+
+        //send the ajax request
+        $.ajax({
+            url: '/comments/' + reviewId, 
+            type: "POST", 
+            dataType: "json", 
+            data: comment, 
+            success: function(body){
+                if(body.status){
+                    alert("The comment has been added successfully. ");
+                    that.loadReviews(that.landlord); 
+                }
+            }
+        });
+    },
+    submitEditComment: function(event){
+        var that = this; 
+        //get the comment id 
+        var commentId = event.currentTarget.id.split("_")[1];
+
+        //get the new content
+        var comment = {}; 
+        comment.content = document.getElementById("editedComment_" + commentId).value;
+
+        $.ajax({
+            url: "/comments/" + commentId, 
+            type: "PUT",
+            dataType: "json", 
+            data: comment, 
+            success: function(body){
+                if(body.status){
+                    alert("Comment updated successfully");
+                    that.loadReviews();
+                }
+            }
+        });
+    }, 
+    cancelEditComment: function(event){
+        var commentId = event.currentTarget.id.split("_")[1];
+
+        //remove the text box 
+        var daddy = document.getElementById("editedComment_" + commentId).parentNode;
+        daddy.removeChild(document.getElementById("editedComment_" + commentId));
+        daddy.removeChild(document.getElementById("submit-editComment-student_" + commentId)); 
+        daddy.removeChild(document.getElementById("cancel-editComment-student_" + commentId));
+
+        //reshow the old one 
+        document.getElementById("comment-p_" + commentId).style.display = "";
 
     }
 });

@@ -379,6 +379,7 @@ var LandlordView = Backbone.View.extend({
                                         var deleteButtonText = document.createTextNode("Delete");
                                         
                                         //attributes
+                                        commentFooter_a.setAttribute("href", "/" + comment.authorType + "s/" + comment.authorId); 
                                         commentFooter.setAttribute("class", "panel-footer");
                                         if(isValidUser) commentFooter_p.setAttribute("class", "col-lg-8")
                                         if(isValidUser) editComment.setAttribute("class", "btn btn-primary edit-comment  col-lg-offset-1"); 
